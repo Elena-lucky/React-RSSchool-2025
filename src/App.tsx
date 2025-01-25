@@ -1,17 +1,35 @@
+import React from 'react';
 import Search from './components/search/Search';
+import Result from './components/result/Result';
 import './App.css';
 
-function App() {
-  const handleSearch = (query: string) => {
-    console.log('Search query:', query);
+class App extends React.Component {
+  state = {
+    query: '',
+    result: null,
   };
-  return (
-    <>
+
+  handleSearch = (query: string) => {
+    this.setState({ query });
+
+    const fakeResult = {
+      name: 'Name',
+      description: 'Description',
+    };
+
+    this.setState({ result: fakeResult });
+  };
+
+  render() {
+    const { result } = this.state;
+
+    return (
       <div>
-        <Search onSearchClick={handleSearch} />
+        <Search onSearchClick={this.handleSearch} />
+        <Result result={result} />
       </div>
-    </>
-  );
+    );
+  }
 }
 
 export default App;
