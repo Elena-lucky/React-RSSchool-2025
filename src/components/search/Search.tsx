@@ -17,13 +17,20 @@ class Search extends Component<SearchProps, UsersQuery> {
     };
   }
 
+  componentDidMount() {
+    this.setState({ query: '' });
+  }
+
   handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ query: event.target.value });
   };
 
   handleSearch = () => {
-    const { query } = this.state;
-    this.props.onSearchClick(query);
+    const query = this.state.query.trim();
+    if (query) {
+      localStorage.setItem('searchQuery', query);
+      this.props.onSearchClick(query);
+    }
   };
 
   render() {
@@ -35,7 +42,11 @@ class Search extends Component<SearchProps, UsersQuery> {
           onChange={this.handleInputChange}
           placeholder="What are you searching?"
         />
-        <button className={styles.searchButton} onClick={this.handleSearch}>
+        <button
+          className={styles.searchButton}
+          onClick={this.handleSearch}
+          disabled={!this.state.query.trim()}
+        >
           Search
         </button>
       </div>

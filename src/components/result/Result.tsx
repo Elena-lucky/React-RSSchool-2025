@@ -1,26 +1,30 @@
 import { Component } from 'react';
 import styles from './Result.module.css';
 
+interface Film {
+  title: string;
+  opening_crawl: string;
+}
+
 interface Props {
-  result: { name: string; description: string } | null;
+  data: { results: Film[] } | null;
 }
 
 class Result extends Component<Props> {
   render() {
-    const { result } = this.props;
+    const { data } = this.props;
 
     return (
       <div className={styles.results}>
-        {result ? (
-          <div>
-            <h3>{result.name}</h3>
-            <p>{result.description}</p>
-          </div>
+        {data && data.results.length > 0 ? (
+          data.results.map((film, index) => (
+            <div key={index} className={styles.resultItem}>
+              <h3>{film.title}</h3>
+              <p>{film.opening_crawl}</p>
+            </div>
+          ))
         ) : (
-          <p>
-            Type your query and press the button &aposSearch&apos to see the
-            result.
-          </p>
+          <p>No results found. Please try another query.</p>
         )}
       </div>
     );

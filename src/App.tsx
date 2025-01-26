@@ -1,32 +1,39 @@
 import React from 'react';
 import Search from './components/search/Search';
 import Result from './components/result/Result';
+import { fetchSearchResults } from './services/Api';
 import './App.css';
 
 class App extends React.Component {
   state = {
     query: '',
     result: null,
+    error: null,
   };
 
-  handleSearch = (query: string) => {
-    this.setState({ query });
+  componentDidMount() {
+    this.handleSearch('');
+  }
 
-    const fakeResult = {
-      name: 'Name',
-      description: 'Description',
-    };
+  handleSearch = async (query: string) => {
+    this.setState({ query, error: null });
 
-    this.setState({ result: fakeResult });
+    try {
+      const result = await fetchSearchResults(query);
+      this.setState({ result });
+    } catch {
+      this.setState({ error: 'Please try again.' });
+    }
   };
 
   render() {
-    const { result } = this.state;
+    const { result, error } = this.state;
 
     return (
       <div>
         <Search onSearchClick={this.handleSearch} />
-        <Result result={result} />
+        {error && <p className="error">{error}</p>}
+        {result && <Result data={result} />}
       </div>
     );
   }
