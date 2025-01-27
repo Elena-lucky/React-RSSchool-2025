@@ -2,6 +2,7 @@ import React from 'react';
 import Search from './components/search/Search';
 import Result from './components/result/Result';
 import Spinner from './components/spinner/Spinner';
+import ErrorBoundary from './components/error boundary/ErrorBoundary';
 import { fetchSearchResults } from './services/Api';
 import './App.css';
 
@@ -28,16 +29,23 @@ class App extends React.Component {
     }
   };
 
+  throwError = () => {
+    throw new Error('My Error Boundary component is working!');
+  };
+
   render() {
     const { result, error, isLoading } = this.state;
 
     return (
-      <div>
-        <Search onSearchClick={this.handleSearch} />
-        {isLoading && <Spinner />} {}
-        {error && <p className="error">{error}</p>}
-        {result && <Result data={result} />}
-      </div>
+      <ErrorBoundary>
+        <div>
+          <Search onSearchClick={this.handleSearch} />
+          {isLoading && <Spinner />} {}
+          {error && <p>{error}</p>}
+          {result && <Result data={result} />}
+          <button onClick={this.throwError}>Check the Error Boundary</button> {}
+        </div>
+      </ErrorBoundary>
     );
   }
 }
