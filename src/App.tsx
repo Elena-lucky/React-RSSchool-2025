@@ -3,6 +3,7 @@ import Search from './components/search/Search';
 import Result from './components/result/Result';
 import Spinner from './components/spinner/Spinner';
 import ErrorBoundary from './components/error boundary/ErrorBoundary';
+import Fallback from './components/fallback/Fallback';
 import { fetchSearchResults } from './services/Api';
 import './App.css';
 
@@ -29,10 +30,6 @@ class App extends React.Component {
     }
   };
 
-  throwError = () => {
-    throw new Error('My Error Boundary component is working!');
-  };
-
   render() {
     const { result, error, isLoading } = this.state;
 
@@ -43,7 +40,7 @@ class App extends React.Component {
           {isLoading && <Spinner />} {}
           {error && <p>{error}</p>}
           {result && <Result data={result} />}
-          <button onClick={this.throwError}>Check the Error Boundary</button> {}
+          <Fallback />
         </div>
       </ErrorBoundary>
     );
