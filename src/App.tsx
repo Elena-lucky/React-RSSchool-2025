@@ -36,6 +36,15 @@ class App extends React.Component {
     return (
       <ErrorBoundary>
         <div>
+          <p className="greeting">
+            Welcome to the Star Wars Universe Explorer! Dive into the galaxy
+            far, far away and uncover fascinating details about your favorite
+            Star Wars characters. Whether you are a Jedi, Sith, or just a
+            curious traveler, my app helps you connect with the iconic
+            personalities of this legendary saga. Simply type a name or last
+            name into the search bar, and you will discover key facts, hidden
+            secrets, and more about the person you are looking for.
+          </p>
           <Search onSearchClick={this.handleSearch} />
           {isLoading && <Spinner />} {}
           {error && <p>{error}</p>}

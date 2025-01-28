@@ -33,7 +33,7 @@ class ErrorBoundary extends Component<PropsEB, StateEB> {
     if (this.state.hasError) {
       return (
         <div>
-          <h1>Something went wrong.</h1>
+          <h1 className={styles.error}>Something went wrong.</h1>
           {this.state.errorMessage && (
             <p className={styles.errorMessage}>{this.state.errorMessage}</p>
           )}

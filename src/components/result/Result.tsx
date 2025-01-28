@@ -1,13 +1,16 @@
 import { Component } from 'react';
 import styles from './Result.module.css';
 
-interface Film {
-  title: string;
-  opening_crawl: string;
+interface Person {
+  name: string;
+  birth_year: string;
+  gender: string;
+  hair_color: string;
+  eye_color: string;
 }
 
 interface Props {
-  data: { results: Film[] } | null;
+  data: { results: Person[] } | null;
 }
 
 class Result extends Component<Props> {
@@ -17,10 +20,13 @@ class Result extends Component<Props> {
     return (
       <div className={styles.results}>
         {data && data.results.length > 0 ? (
-          data.results.map((film, index) => (
+          data.results.map((person, index) => (
             <div key={index} className={styles.resultItem}>
-              <h3>{film.title}</h3>
-              <p>{film.opening_crawl}</p>
+              <h3>{person.name}</h3>
+              <p>The birth of year: {person.birth_year}</p>
+              <p>The gender: {person.gender}</p>
+              <p>The hair color: {person.hair_color}</p>
+              <p>The eye color: {person.eye_color}</p>
             </div>
           ))
         ) : (
