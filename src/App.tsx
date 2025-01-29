@@ -4,7 +4,7 @@ import Result from './components/result/Result';
 import Spinner from './components/spinner/Spinner';
 import ErrorBoundary from './components/error boundary/ErrorBoundary';
 import Fallback from './components/fallback/Fallback';
-import { fetchSearchResults } from './services/Api';
+import { fetchSearchResults } from './services/api';
 import './App.css';
 
 class App extends React.Component {
@@ -16,7 +16,8 @@ class App extends React.Component {
   };
 
   componentDidMount() {
-    this.handleSearch('');
+    const savedQuery = localStorage.getItem('searchQuery') || '';
+    this.handleSearch(savedQuery);
   }
 
   handleSearch = async (query: string) => {
