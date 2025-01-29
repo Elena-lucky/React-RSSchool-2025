@@ -22,11 +22,21 @@ class Result extends Component<Props> {
         {data && data.results.length > 0 ? (
           data.results.map((person, index) => (
             <div key={index} className={styles.resultItem}>
-              <h3>{person.name}</h3>
-              <p>The birth of year: {person.birth_year}</p>
-              <p>The gender: {person.gender}</p>
-              <p>The hair color: {person.hair_color}</p>
-              <p>The eye color: {person.eye_color}</p>
+              <h2 className={styles.itemName}>{person.name}</h2>
+              <ul>
+                <li className={styles.itemDetails}>
+                  The birth of year: {person.birth_year}
+                </li>
+                <li className={styles.itemDetails}>
+                  The gender: {person.gender}
+                </li>
+                <li className={styles.itemDetails}>
+                  The hair color: {person.hair_color}
+                </li>
+                <li className={styles.itemDetails}>
+                  The eye color: {person.eye_color}
+                </li>
+              </ul>
             </div>
           ))
         ) : (
