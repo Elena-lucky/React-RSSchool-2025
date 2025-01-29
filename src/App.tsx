@@ -4,7 +4,7 @@ import Result from './components/result/Result';
 import Spinner from './components/spinner/Spinner';
 import ErrorBoundary from './components/error boundary/ErrorBoundary';
 import Fallback from './components/fallback/Fallback';
-import { fetchSearchResults } from './services/api';
+import { fetchSearchResults } from './services/Api';
 import './App.css';
 
 class App extends React.Component {
