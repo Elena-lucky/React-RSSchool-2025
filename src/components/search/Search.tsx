@@ -33,6 +33,12 @@ class Search extends Component<SearchProps, UsersQuery> {
     }
   };
 
+  handleEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter' && this.state.query.trim()) {
+      this.handleSearch();
+    }
+  };
+
   render() {
     return (
       <div>
@@ -40,6 +46,7 @@ class Search extends Component<SearchProps, UsersQuery> {
           type="text"
           value={this.state.query}
           onChange={this.handleInputChange}
+          onKeyDown={this.handleEnter}
           placeholder="What are you searching?"
         />
         <button

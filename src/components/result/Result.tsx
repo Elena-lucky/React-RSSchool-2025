@@ -40,7 +40,9 @@ class Result extends Component<Props> {
             </div>
           ))
         ) : (
-          <p>No results found. Please try another query.</p>
+          <p className={styles.noResults}>
+            No results found. Please try another query.
+          </p>
         )}
       </div>
     );

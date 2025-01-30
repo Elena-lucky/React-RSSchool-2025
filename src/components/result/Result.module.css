@@ -1,3 +1,8 @@
+.no-results {
+  font-size: 1.5rem;
+  color: aliceblue;
+}
+
 .results {
   display: flex;
   flex-wrap: wrap;
