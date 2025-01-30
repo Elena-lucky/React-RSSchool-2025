@@ -1,0 +1,15 @@
+body {
+  background: url(assets/background.jpg) no-repeat;
+  background-size: cover;
+}
+
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.greeting {
+  color: white;
+}

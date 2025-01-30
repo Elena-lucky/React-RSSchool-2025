@@ -1,0 +1,8 @@
+.error {
+  font-size: 2rem;
+  color: rgb(198, 220, 248);
+}
+
+.error-message {
+  color: rgb(240, 24, 35);
+}

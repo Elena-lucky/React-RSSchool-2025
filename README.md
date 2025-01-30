@@ -1,1 +1,1 @@
-# React-RSSchool-2025
+#A project for React course by RS School
