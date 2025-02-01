@@ -1,64 +1,53 @@
-import { Component } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './Search.module.css';
 
 type SearchProps = {
   onSearchClick: (query: string) => void;
 };
 
-type UsersQuery = {
-  query: string;
+const Search = ({ onSearchClick }: SearchProps) => {
+  const [query, setQuery] = useState('');
+
+  useEffect(() => {
+    setQuery('');
+  }, []);
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(event.target.value);
+  };
+
+  const handleSearch = () => {
+    const trimmedQuery = query.trim();
+    if (trimmedQuery) {
+      localStorage.setItem('searchQuery', trimmedQuery);
+      onSearchClick(trimmedQuery);
+    }
+  };
+
+  const handleEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter' && query.trim()) {
+      handleSearch();
+    }
+  };
+
+  return (
+    <div>
+      <input
+        type="text"
+        value={query}
+        onChange={handleInputChange}
+        onKeyDown={handleEnter}
+        placeholder="What are you searching?"
+      />
+      <button
+        className={styles.searchButton}
+        onClick={handleSearch}
+        disabled={!query.trim()}
+      >
+        Search
+      </button>
+    </div>
+  );
 };
-
-class Search extends Component<SearchProps, UsersQuery> {
-  constructor(props: SearchProps) {
-    super(props);
-    this.state = {
-      query: '',
-    };
-  }
-
-  componentDidMount() {
-    this.setState({ query: '' });
-  }
-
-  handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ query: event.target.value });
-  };
-
-  handleSearch = () => {
-    const query = this.state.query.trim();
-    if (query) {
-      localStorage.setItem('searchQuery', query);
-      this.props.onSearchClick(query);
-    }
-  };
-
-  handleEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter' && this.state.query.trim()) {
-      this.handleSearch();
-    }
-  };
-
-  render() {
-    return (
-      <div>
-        <input
-          type="text"
-          value={this.state.query}
-          onChange={this.handleInputChange}
-          onKeyDown={this.handleEnter}
-          placeholder="What are you searching?"
-        />
-        <button
-          className={styles.searchButton}
-          onClick={this.handleSearch}
-          disabled={!this.state.query.trim()}
-        >
-          Search
-        </button>
-      </div>
-    );
-  }
-}
 
 export default Search;

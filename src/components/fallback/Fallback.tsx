@@ -1,23 +1,17 @@
-import { Component } from 'react';
+import { useState } from 'react';
 
-class Fallback extends Component {
-  state = {
-    throwError: false,
+const Fallback = () => {
+  const [throwError, setThrowError] = useState(false);
+
+  const handleThrowError = () => {
+    setThrowError(true);
   };
 
-  handleThrowError = () => {
-    this.setState({ throwError: true });
-  };
-
-  render() {
-    if (this.state.throwError) {
-      throw new Error('My Error Boundary component is working!');
-    }
-
-    return (
-      <button onClick={this.handleThrowError}>Check the Error Boundary</button>
-    );
+  if (throwError) {
+    throw new Error('My Error Boundary component is working!');
   }
-}
+
+  return <button onClick={handleThrowError}>Check the Error Boundary</button>;
+};
 
 export default Fallback;
