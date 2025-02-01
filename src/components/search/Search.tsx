@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import styles from './Search.module.css';
 
 type SearchProps = {
@@ -6,23 +6,20 @@ type SearchProps = {
 };
 
 const Search = ({ onSearchClick }: SearchProps) => {
-  const [query, setQuery] = useState('');
-
-  useEffect(() => {
-    setQuery('');
-  }, []);
+  const [query, setQuery] = useState(
+    () => localStorage.getItem('searchQuery') || ''
+  );
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
   };
 
-  const handleSearch = () => {
+  const handleSearch = useCallback(() => {
     const trimmedQuery = query.trim();
     if (trimmedQuery) {
-      localStorage.setItem('searchQuery', trimmedQuery);
       onSearchClick(trimmedQuery);
     }
-  };
+  }, [query, onSearchClick]);
 
   const handleEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter' && query.trim()) {

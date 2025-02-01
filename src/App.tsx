@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useCallback, useEffect } from 'react';
+import useSearchQuery from './hooks/useSearchQuery';
 import Search from './components/search/Search';
 import Result from './components/result/Result';
 import Spinner from './components/spinner/Spinner';
@@ -7,31 +8,36 @@ import Fallback from './components/fallback/Fallback';
 import { fetchSearchResults } from './services/Api';
 import './App.css';
 
+const defaultQuery = '';
+
 const App = () => {
-  const [, setQuery] = useState('');
+  const [query, setQuery] = useSearchQuery();
   const [result, setResult] = useState(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  const handleSearch = useCallback(
+    async (searchQuery: string) => {
+      setQuery(searchQuery);
+      setError(null);
+      setIsLoading(true);
+
+      try {
+        const result = await fetchSearchResults(searchQuery);
+        setResult(result);
+      } catch {
+        setError('Please try again.');
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [setQuery]
+  );
+
   useEffect(() => {
-    const savedQuery = localStorage.getItem('searchQuery') || '';
-    handleSearch(savedQuery);
-  }, []);
-
-  const handleSearch = async (query: string) => {
-    setQuery(query);
-    setError(null);
-    setIsLoading(true);
-
-    try {
-      const result = await fetchSearchResults(query);
-      setResult(result);
-    } catch {
-      setError('Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    const initialQuery = query || defaultQuery;
+    handleSearch(initialQuery);
+  }, [query, handleSearch]);
 
   return (
     <ErrorBoundary>
