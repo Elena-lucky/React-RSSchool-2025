@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import Spinner from '../../components/spinner/Spinner';
 import styles from './DetailsPage.module.css';
 
 interface Person {
@@ -66,7 +67,15 @@ const DetailsPage = ({ id, onClose }: Props) => {
     return () => document.removeEventListener('click', handleOutsideClick);
   }, [handleClose]);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) {
+    return (
+      <div className={styles.results}>
+        <div className={styles.spinnerContainer}>
+          <Spinner />
+        </div>
+      </div>
+    );
+  }
   if (!person) return <p>Person not found</p>;
 
   return (
