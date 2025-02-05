@@ -1,22 +1,8 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { Person } from '../../utils/types';
 import Spinner from '../../components/spinner/Spinner';
 import styles from './DetailsPage.module.css';
-
-interface Person {
-  name: string;
-  birth_year: string;
-  gender: string;
-  hair_color: string;
-  eye_color: string;
-  height: string;
-  mass: string;
-  skin_color: string;
-  homeworld: string;
-  url: string;
-  created: string;
-  edited: string;
-}
 
 interface Props {
   id: string;

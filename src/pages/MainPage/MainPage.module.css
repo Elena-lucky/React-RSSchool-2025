@@ -9,10 +9,25 @@
 
 .results-left {
   flex: 1;
-  padding: 20px;
+}
+
+.results-left p {
+  text-align: end;
+  font-size: 1.5rem;
+  color: white;
 }
 
 .results-right {
   flex: 1;
-  padding: 20px;
+  margin-top: 25px;
+}
+
+.pagination {
+  margin: 15px;
+}
+
+.pagination span {
+  margin: 5px;
+  font-size: 1.2rem;
+  color: #fdfdfd;
 }

@@ -1,13 +1,5 @@
+import { Person } from '../../utils/types';
 import styles from './Result.module.css';
-
-interface Person {
-  name: string;
-  birth_year: string;
-  gender: string;
-  hair_color: string;
-  eye_color: string;
-  url: string;
-}
 
 interface Props {
   data: { results: Person[] } | null;
