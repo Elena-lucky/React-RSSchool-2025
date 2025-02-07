@@ -2,24 +2,39 @@
   color: white;
 }
 
-.results-container {
+.content {
   display: flex;
+  flex-grow: 1;
+  gap: 20px;
+}
+
+.left-section {
   width: 100%;
+  overflow-y: auto;
+  transition: width 0.3s ease;
 }
 
-.results-left {
-  flex: 1;
+.right-section {
+  width: 0;
+  overflow: hidden;
+  transition: width 0.3s ease;
 }
 
-.results-left p {
-  text-align: end;
+.split-view .left-section {
+  width: 50%;
+}
+
+.split-view .right-section {
+  width: 50%;
+  border-left: 2px solid #ccc;
+  padding-left: 20px;
+  overflow-y: auto;
+}
+
+.no-results {
+  text-align: center;
   font-size: 1.5rem;
   color: white;
-}
-
-.results-right {
-  flex: 1;
-  margin-top: 25px;
 }
 
 .pagination {

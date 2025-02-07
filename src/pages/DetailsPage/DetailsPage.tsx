@@ -1,18 +1,15 @@
-import { useEffect, useState, useCallback } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useEffect, useCallback, useState, useRef } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Person } from '../../utils/types';
 import Spinner from '../../components/spinner/Spinner';
 import styles from './DetailsPage.module.css';
 
-interface Props {
-  id: string;
-  onClose: () => void;
-}
-
-const DetailsPage = ({ id, onClose }: Props) => {
+const DetailsPage = () => {
+  const { id } = useParams<{ id: string }>();
   const [person, setPerson] = useState<Person | null>(null);
   const [loading, setLoading] = useState(true);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const detailsRef = useRef<HTMLDivElement | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadPerson = async () => {
@@ -37,20 +34,21 @@ const DetailsPage = ({ id, onClose }: Props) => {
   }, [id]);
 
   const handleClose = useCallback(() => {
-    searchParams.delete('details');
-    setSearchParams(searchParams);
-    onClose();
-  }, [searchParams, setSearchParams, onClose]);
+    navigate('/');
+  }, [navigate]);
 
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {
-      if (!(event.target as HTMLElement).closest(`.${styles.resultItem}`)) {
+      if (
+        detailsRef.current &&
+        !detailsRef.current.contains(event.target as Node)
+      ) {
         handleClose();
       }
     };
 
-    document.addEventListener('click', handleOutsideClick);
-    return () => document.removeEventListener('click', handleOutsideClick);
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
   }, [handleClose]);
 
   if (loading) {
@@ -65,7 +63,7 @@ const DetailsPage = ({ id, onClose }: Props) => {
   if (!person) return <p>Person not found</p>;
 
   return (
-    <div className={styles.results}>
+    <div className={styles.results} ref={detailsRef}>
       <div className={styles.resultItem}>
         <button className={styles.closeButton} onClick={handleClose}>
           ✖

@@ -1,12 +1,11 @@
 import { useState, useCallback, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { Outlet, useSearchParams, useLocation } from 'react-router-dom';
 import useSearchQuery from '../../hooks/useSearchQuery';
 import Search from '../../components/search/Search';
 import Result from '../../components/result/Result';
 import Spinner from '../../components/spinner/Spinner';
 import Fallback from '../../components/fallback/Fallback';
 import { fetchSearchResults } from '../../services/Api';
-import DetailsPage from '../DetailsPage/DetailsPage';
 import { ApiResponse } from '../../utils/types';
 import styles from './MainPage.module.css';
 
@@ -18,14 +17,20 @@ const MainPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
 
   const currentPage = Number(searchParams.get('page')) || 1;
+  const isDetailsPage = location.pathname.startsWith('/person/');
 
   const handleSearch = useCallback(
     async (searchQuery: string, page: number = 1) => {
       setQuery(searchQuery);
       setError(null);
       setIsLoading(true);
+      setSearchParams(() => ({
+        query: searchQuery,
+        page: String(page),
+      }));
 
       try {
         const data = await fetchSearchResults(searchQuery, page);
@@ -36,25 +41,21 @@ const MainPage = () => {
         setIsLoading(false);
       }
     },
-    [setQuery]
+    [setQuery, setSearchParams]
   );
 
   useEffect(() => {
     const initialQuery = query || defaultQuery;
-    handleSearch(initialQuery, currentPage);
-  }, [query, currentPage, handleSearch]);
-
-  const handlePersonClick = (id: string) => {
-    setSearchParams({ page: String(currentPage), details: id });
-  };
-
-  const handleCloseDetails = () => {
-    searchParams.delete('details');
-    setSearchParams(searchParams);
-  };
+    if (!isDetailsPage) {
+      handleSearch(initialQuery, currentPage);
+    }
+  }, [query, currentPage, handleSearch, isDetailsPage]);
 
   const handlePageChange = (newPage: number) => {
-    setSearchParams({ query, page: String(newPage) });
+    setSearchParams((prevParams) => ({
+      query: prevParams.get('query') || defaultQuery,
+      page: String(newPage),
+    }));
   };
 
   return (
@@ -68,24 +69,25 @@ const MainPage = () => {
         discover key facts, hidden secrets, and more about the person you are
         looking for.
       </p>
-      <Search onSearchClick={(q) => handleSearch(q, 1)} />
-      {isLoading && <Spinner />}
-      {error && <p>{error}</p>}
-      <div className={styles.resultsContainer}>
-        <div className={styles.resultsLeft}>
+      <Search onSearchClick={(searchQuery) => handleSearch(searchQuery, 1)} />
+      <div
+        className={`${styles.content} ${isDetailsPage ? styles.splitView : ''}`}
+      >
+        <div className={styles.leftSection}>
+          {isLoading && <Spinner />}
+          {error && <p>{error}</p>}
           {result && result.results.length > 0 ? (
-            <Result data={result} onPersonClick={handlePersonClick} />
+            <Result data={result} />
           ) : (
             <p>No results found</p>
           )}
         </div>
-        <div className={styles.resultsRight}>
-          {searchParams.get('details') && (
-            <DetailsPage
-              id={searchParams.get('details') ?? ''}
-              onClose={handleCloseDetails}
-            />
-          )}
+
+        {}
+        <div
+          className={`${styles.rightSection} ${isDetailsPage ? styles.visible : ''}`}
+        >
+          <Outlet />
         </div>
       </div>
 

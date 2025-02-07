@@ -1,27 +1,24 @@
 import { Person } from '../../utils/types';
+import { Link } from 'react-router-dom';
 import styles from './Result.module.css';
 
 interface Props {
   data: { results: Person[] } | null;
-  onPersonClick: (id: string) => void;
 }
 
-const Result = ({ data, onPersonClick }: Props) => {
+const Result = ({ data }: Props) => {
   return (
     <div className={styles.results}>
-      {data && data.results.length > 0 ? (
+      {data?.results.length ? (
         data.results.map((person) => {
           const id = person.url.split('/').slice(-2, -1)[0];
+
           return (
-            <div
-              key={id}
-              className={styles.resultItem}
-              onClick={() => onPersonClick(id)}
-            >
+            <Link key={id} to={`person/${id}`} className={styles.resultItem}>
               <h2 className={styles.itemName}>{person.name}</h2>
               <ul>
                 <li className={styles.itemDetails}>
-                  The birth of year: {person.birth_year}
+                  The birth year: {person.birth_year}
                 </li>
                 <li className={styles.itemDetails}>
                   The gender: {person.gender}
@@ -33,7 +30,7 @@ const Result = ({ data, onPersonClick }: Props) => {
                   The eye color: {person.eye_color}
                 </li>
               </ul>
-            </div>
+            </Link>
           );
         })
       ) : (
