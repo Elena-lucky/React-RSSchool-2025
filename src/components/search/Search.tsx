@@ -1,5 +1,5 @@
-import { useState, useCallback } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useCallback } from 'react';
+import useSearchQuery from '../../hooks/useSearchQuery';
 import styles from './Search.module.css';
 
 type SearchProps = {
@@ -7,12 +7,7 @@ type SearchProps = {
 };
 
 const Search = ({ onSearchClick }: SearchProps) => {
-  const [query, setQuery] = useState(
-    () => localStorage.getItem('searchQuery') || ''
-  );
-
-  const navigate = useNavigate();
-  const [, setSearchParams] = useSearchParams();
+  const [query, setQuery, resetQuery] = useSearchQuery();
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
@@ -22,20 +17,17 @@ const Search = ({ onSearchClick }: SearchProps) => {
     const trimmedQuery = query.trim();
     if (trimmedQuery) {
       onSearchClick(trimmedQuery);
-      setSearchParams({ query: trimmedQuery, page: '1' });
     }
-  }, [query, onSearchClick, setSearchParams]);
+  }, [query, onSearchClick]);
 
   const handleEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter' && query.trim()) {
+    if (event.key === 'Enter') {
       handleSearch();
     }
   };
 
   const handleReset = () => {
-    localStorage.removeItem('searchQuery');
-    setQuery('');
-    navigate('/');
+    resetQuery();
     window.location.reload();
   };
 

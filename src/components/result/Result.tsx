@@ -11,10 +11,14 @@ const Result = ({ data }: Props) => {
     <div className={styles.results}>
       {data?.results.length ? (
         data.results.map((person) => {
-          const id = person.url.split('/').slice(-2, -1)[0];
+          const personId = person.url.match(/\/(\d+)\/$/)?.[1] || '';
 
           return (
-            <Link key={id} to={`person/${id}`} className={styles.resultItem}>
+            <Link
+              key={personId}
+              to={`person/${personId}`}
+              className={styles.resultItem}
+            >
               <h2 className={styles.itemName}>{person.name}</h2>
               <ul>
                 <li className={styles.itemDetails}>

@@ -4,12 +4,11 @@ import useSearchQuery from '../../hooks/useSearchQuery';
 import Search from '../../components/search/Search';
 import Result from '../../components/result/Result';
 import Spinner from '../../components/spinner/Spinner';
+import Pagination from '../../components/pagination/Pagination';
 import Fallback from '../../components/fallback/Fallback';
 import { fetchSearchResults } from '../../services/Api';
 import { ApiResponse } from '../../utils/types';
 import styles from './MainPage.module.css';
-
-const defaultQuery = '';
 
 const MainPage = () => {
   const [query, setQuery] = useSearchQuery();
@@ -22,41 +21,45 @@ const MainPage = () => {
   const currentPage = Number(searchParams.get('page')) || 1;
   const isDetailsPage = location.pathname.startsWith('/person/');
 
-  const handleSearch = useCallback(
-    async (searchQuery: string, page: number = 1) => {
-      setQuery(searchQuery);
-      setError(null);
-      setIsLoading(true);
-      setSearchParams(() => ({
-        query: searchQuery,
-        page: String(page),
-      }));
+  const fetchData = useCallback(async (searchQuery: string, page: number) => {
+    setIsLoading(true);
+    setError(null);
 
-      try {
-        const data = await fetchSearchResults(searchQuery, page);
-        setResult(data);
-      } catch {
-        setError('Please try again.');
-      } finally {
-        setIsLoading(false);
-      }
+    try {
+      const data = await fetchSearchResults(searchQuery, page);
+      setResult(data);
+    } catch {
+      setError('Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  const handleSearch = useCallback(
+    (searchQuery: string) => {
+      setQuery(searchQuery);
+      setSearchParams({ query: searchQuery, page: '1' });
+      fetchData(searchQuery, 1);
     },
-    [setQuery, setSearchParams]
+    [setQuery, setSearchParams, fetchData]
+  );
+
+  const handlePageChange = useCallback(
+    (newPage: number) => {
+      setSearchParams((prevParams) => ({
+        ...Object.fromEntries(prevParams.entries()),
+        page: String(newPage),
+      }));
+      fetchData(query, newPage);
+    },
+    [query, setSearchParams, fetchData]
   );
 
   useEffect(() => {
-    const initialQuery = query || defaultQuery;
     if (!isDetailsPage) {
-      handleSearch(initialQuery, currentPage);
+      fetchData(query, currentPage);
     }
-  }, [query, currentPage, handleSearch, isDetailsPage]);
-
-  const handlePageChange = (newPage: number) => {
-    setSearchParams((prevParams) => ({
-      query: prevParams.get('query') || defaultQuery,
-      page: String(newPage),
-    }));
-  };
+  }, [query, currentPage, fetchData]);
 
   return (
     <div className={styles.container}>
@@ -69,7 +72,7 @@ const MainPage = () => {
         discover key facts, hidden secrets, and more about the person you are
         looking for.
       </p>
-      <Search onSearchClick={(searchQuery) => handleSearch(searchQuery, 1)} />
+      <Search onSearchClick={handleSearch} />
       <div
         className={`${styles.content} ${isDetailsPage ? styles.splitView : ''}`}
       >
@@ -82,31 +85,21 @@ const MainPage = () => {
             <p>No results found</p>
           )}
         </div>
-
-        {}
-        <div
-          className={`${styles.rightSection} ${isDetailsPage ? styles.visible : ''}`}
-        >
-          <Outlet />
-        </div>
+        {isDetailsPage && (
+          <div
+            className={`${styles.rightSection} ${isDetailsPage ? styles.visible : ''}`}
+          >
+            <Outlet />
+          </div>
+        )}
       </div>
-
       {result && result.count > 0 && (
-        <div className={styles.pagination}>
-          <button
-            disabled={!result.previous}
-            onClick={() => handlePageChange(currentPage - 1)}
-          >
-            Previous
-          </button>
-          <span>Page {currentPage}</span>
-          <button
-            disabled={!result.next}
-            onClick={() => handlePageChange(currentPage + 1)}
-          >
-            Next
-          </button>
-        </div>
+        <Pagination
+          currentPage={currentPage}
+          hasPrevious={!!result.previous}
+          hasNext={!!result.next}
+          onPageChange={handlePageChange}
+        />
       )}
       <Fallback />
     </div>

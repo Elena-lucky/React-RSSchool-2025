@@ -1,10 +1,11 @@
-const API_URL = 'https://swapi.dev/api/';
+const API_URL = 'https://swapi.dev/api';
 
 export async function fetchSearchResults(query: string, page: number = 1) {
   try {
     const url = query
       ? `${API_URL}/people/?search=${query}&page=${page}`
       : `${API_URL}/people/?page=${page}`;
+    console.log('Fetching URL:', url);
 
     const response = await fetch(url);
     if (!response.ok) {

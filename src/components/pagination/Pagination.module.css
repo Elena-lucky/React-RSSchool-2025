@@ -1,0 +1,9 @@
+.pagination {
+  margin: 15px;
+}
+
+.pagination span {
+  margin: 5px;
+  font-size: 1.2rem;
+  color: #fdfdfd;
+}
