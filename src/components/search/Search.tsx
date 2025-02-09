@@ -47,7 +47,7 @@ const Search = ({ onSearchClick }: SearchProps) => {
       >
         Search
       </button>
-      <button className={styles.searchButton} onClick={handleReset}>
+      <button className={styles.resetButton} onClick={handleReset}>
         Reset
       </button>
     </div>
