@@ -1,1 +1,1 @@
-#A project for React course by RS School
+# A project for React course by RS School
