@@ -11,7 +11,7 @@ type Theme = 'light' | 'dark';
 
 interface ThemeContextType {
   theme: Theme;
-  toggleTheme: (selectedTheme: Theme) => void;
+  toggleTheme: () => void;
 }
 
 interface ThemeProviderProps {
@@ -23,14 +23,13 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export const ThemeProvider = ({ children }: ThemeProviderProps) => {
   const [theme, setTheme] = useState<Theme>('dark');
 
+  const toggleTheme = useCallback(() => {
+    setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
+  }, []);
+
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
-
-  const toggleTheme = useCallback((selectedTheme: Theme) => {
-    setTheme(selectedTheme);
-    document.documentElement.setAttribute('data-theme', selectedTheme);
-  }, []);
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
@@ -42,7 +41,7 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
 export const useTheme = () => {
   const context = useContext(ThemeContext);
   if (context === undefined) {
-    throw new Error('useTheme must be used within a ThemeProvider');
+    throw new Error('useTheme is errored');
   }
   return context;
 };

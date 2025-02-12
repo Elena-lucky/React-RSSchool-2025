@@ -9,6 +9,7 @@ import Fallback from '../../components/fallback/Fallback';
 import { fetchSearchResults } from '../../services/Api';
 import { ApiResponse } from '../../utils/types';
 import { useTheme } from '../../context/ThemeContext';
+import ThemeToggle from '../../components/themeToggle/ThemeToggle';
 import styles from './MainPage.module.css';
 
 const MainPage = () => {
@@ -65,28 +66,6 @@ const MainPage = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.themeSelector}>
-        <label>
-          <input
-            type="radio"
-            name="theme"
-            value="light"
-            checked={theme === 'light'}
-            onChange={() => toggleTheme('light')}
-          />
-          Light
-        </label>
-        <label>
-          <input
-            type="radio"
-            name="theme"
-            value="dark"
-            checked={theme === 'dark'}
-            onChange={() => toggleTheme('dark')}
-          />
-          Dark
-        </label>
-      </div>
       <p className={styles.greeting}>
         Welcome to the Star Wars Universe Explorer! Dive into the galaxy far,
         far away and uncover fascinating details about your favorite Star Wars
@@ -96,7 +75,10 @@ const MainPage = () => {
         discover key facts, hidden secrets, and more about the person you are
         looking for.
       </p>
-      <Search onSearchClick={handleSearch} />
+      <div className={styles.usersInput}>
+        <Search onSearchClick={handleSearch} />
+        <ThemeToggle theme={theme} toggleTheme={toggleTheme} /> {}
+      </div>
       <div
         className={`${styles.content} ${isDetailsPage ? styles.splitView : ''}`}
       >
