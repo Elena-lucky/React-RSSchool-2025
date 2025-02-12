@@ -1,5 +1,4 @@
 .search-button,
 reset-button {
-  margin-left: 2rem;
-  background-color: cornflowerblue;
+  margin: 0 2rem;
 }

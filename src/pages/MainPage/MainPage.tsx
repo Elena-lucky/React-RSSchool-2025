@@ -8,6 +8,7 @@ import Pagination from '../../components/pagination/Pagination';
 import Fallback from '../../components/fallback/Fallback';
 import { fetchSearchResults } from '../../services/Api';
 import { ApiResponse } from '../../utils/types';
+import { useTheme } from '../../context/ThemeContext';
 import styles from './MainPage.module.css';
 
 const MainPage = () => {
@@ -17,6 +18,7 @@ const MainPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
+  const { theme, toggleTheme } = useTheme();
 
   const currentPage = Number(searchParams.get('page')) || 1;
   const isDetailsPage = location.pathname.startsWith('/person/');
@@ -63,6 +65,28 @@ const MainPage = () => {
 
   return (
     <div className={styles.container}>
+      <div className={styles.themeSelector}>
+        <label>
+          <input
+            type="radio"
+            name="theme"
+            value="light"
+            checked={theme === 'light'}
+            onChange={() => toggleTheme('light')}
+          />
+          Light
+        </label>
+        <label>
+          <input
+            type="radio"
+            name="theme"
+            value="dark"
+            checked={theme === 'dark'}
+            onChange={() => toggleTheme('dark')}
+          />
+          Dark
+        </label>
+      </div>
       <p className={styles.greeting}>
         Welcome to the Star Wars Universe Explorer! Dive into the galaxy far,
         far away and uncover fascinating details about your favorite Star Wars
