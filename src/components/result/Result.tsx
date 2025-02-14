@@ -1,5 +1,9 @@
 import { Person } from '../../utils/types';
+import Checkbox from '../../components/checkbox/Checkbox';
 import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { toggleItem } from '../../store/selectedItemsSlice';
+import { RootState } from '../../store/store';
 import styles from './Result.module.css';
 
 interface Props {
@@ -7,6 +11,16 @@ interface Props {
 }
 
 const Result = ({ data }: Props) => {
+  const dispatch = useDispatch();
+  const selectedItems = useSelector(
+    (state: RootState) => state.selectedItems.selectedItems
+  );
+
+  const handleCheckboxChange = (personId: string) => {
+    dispatch(toggleItem(personId));
+    console.log('Updated selected items:', [...selectedItems, personId]);
+  };
+
   return (
     <div className={styles.results}>
       {data?.results.length ? (
@@ -14,27 +28,29 @@ const Result = ({ data }: Props) => {
           const personId = person.url.match(/\/(\d+)\/$/)?.[1] || '';
 
           return (
-            <Link
-              key={personId}
-              to={`person/${personId}`}
-              className={styles.resultItem}
-            >
-              <h2 className={styles.itemName}>{person.name}</h2>
-              <ul>
-                <li className={styles.itemDetails}>
-                  The birth year: {person.birth_year}
-                </li>
-                <li className={styles.itemDetails}>
-                  The gender: {person.gender}
-                </li>
-                <li className={styles.itemDetails}>
-                  The hair color: {person.hair_color}
-                </li>
-                <li className={styles.itemDetails}>
-                  The eye color: {person.eye_color}
-                </li>
-              </ul>
-            </Link>
+            <div key={personId} className={styles.resultItemWrapper}>
+              <Link to={`person/${personId}`} className={styles.resultItem}>
+                <h2 className={styles.itemName}>{person.name}</h2>
+                <ul>
+                  <li className={styles.itemDetails}>
+                    The birth year: {person.birth_year}
+                  </li>
+                  <li className={styles.itemDetails}>
+                    The gender: {person.gender}
+                  </li>
+                  <li className={styles.itemDetails}>
+                    The hair color: {person.hair_color}
+                  </li>
+                  <li className={styles.itemDetails}>
+                    The eye color: {person.eye_color}
+                  </li>
+                </ul>
+              </Link>
+              <Checkbox
+                checked={selectedItems.includes(personId)}
+                onChange={() => handleCheckboxChange(personId)}
+              />
+            </div>
           );
         })
       ) : (

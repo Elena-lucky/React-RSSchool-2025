@@ -14,14 +14,18 @@
   }
 }
 
-.result-item {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
+.result-item-wrapper {
   border-radius: 8px;
   border: rgb(73, 73, 73) 1px solid;
   padding: 15px;
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.result-item {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+
   width: 500px;
   cursor: pointer;
   @media screen and (max-width: 1000px) {
@@ -63,4 +67,10 @@
   @media screen and (max-width: 600px) {
     font-size: 0.7rem;
   }
+}
+
+.checkbox {
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
 }
