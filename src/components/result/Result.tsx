@@ -20,8 +20,8 @@ const Result = ({ data }: Props) => {
 
   const currentPage = Number(searchParams.get('page')) || 1;
 
-  const handleCheckboxChange = (personId: string) => {
-    dispatch(toggleItem(personId));
+  const handleCheckboxChange = (person: Person) => {
+    dispatch(toggleItem(person));
   };
 
   return (
@@ -54,8 +54,8 @@ const Result = ({ data }: Props) => {
                 </ul>
               </Link>
               <Checkbox
-                checked={selectedItems.includes(personId)}
-                onChange={() => handleCheckboxChange(personId)}
+                checked={selectedItems.some((item) => item.url === person.url)}
+                onChange={() => handleCheckboxChange(person)}
               />
             </div>
           );

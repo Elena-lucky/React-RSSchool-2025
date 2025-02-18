@@ -1,7 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Person } from '../utils/types';
 
 export interface SelectedItemsState {
-  selectedItems: string[];
+  selectedItems: Person[];
 }
 
 const initialState: SelectedItemsState = {
@@ -12,11 +13,11 @@ const selectedItemsSlice = createSlice({
   name: 'selectedItems',
   initialState,
   reducers: {
-    toggleItem: (state, action: PayloadAction<string>) => {
-      const itemId = action.payload;
-      const index = state.selectedItems.indexOf(itemId);
+    toggleItem: (state, action: PayloadAction<Person>) => {
+      const item = action.payload;
+      const index = state.selectedItems.findIndex((i) => i.url === item.url);
       if (index === -1) {
-        state.selectedItems.push(itemId);
+        state.selectedItems.push(item);
       } else {
         state.selectedItems.splice(index, 1);
       }

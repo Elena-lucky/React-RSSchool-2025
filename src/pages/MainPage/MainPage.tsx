@@ -5,6 +5,7 @@ import Search from '../../components/search/Search';
 import Result from '../../components/result/Result';
 import Spinner from '../../components/spinner/Spinner';
 import Pagination from '../../components/pagination/Pagination';
+import Flyout from '../../components/flyout/Flyout';
 import { useGetPersonQuery } from '../../services/Api/apiSlice';
 import { useTheme } from '../../context/ThemeContext';
 import ThemeToggle from '../../components/themeToggle/ThemeToggle';
@@ -89,6 +90,8 @@ const MainPage = () => {
           onPageChange={handlePageChange}
         />
       )}
+      {}
+      <Flyout />
     </div>
   );
 };
