@@ -1,6 +1,6 @@
 import { Person } from '../../utils/types';
 import Checkbox from '../../components/checkbox/Checkbox';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleItem } from '../../store/selectedItemsSlice';
 import { RootState } from '../../store/store';
@@ -12,13 +12,16 @@ interface Props {
 
 const Result = ({ data }: Props) => {
   const dispatch = useDispatch();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
   const selectedItems = useSelector(
     (state: RootState) => state.selectedItems.selectedItems
   );
 
+  const currentPage = Number(searchParams.get('page')) || 1;
+
   const handleCheckboxChange = (personId: string) => {
     dispatch(toggleItem(personId));
-    console.log('Updated selected items:', [...selectedItems, personId]);
   };
 
   return (
@@ -29,7 +32,11 @@ const Result = ({ data }: Props) => {
 
           return (
             <div key={personId} className={styles.resultItemWrapper}>
-              <Link to={`person/${personId}`} className={styles.resultItem}>
+              <Link
+                to={`people/${personId}`}
+                state={{ from: location, currentPage }}
+                className={styles.resultItem}
+              >
                 <h2 className={styles.itemName}>{person.name}</h2>
                 <ul>
                   <li className={styles.itemDetails}>
