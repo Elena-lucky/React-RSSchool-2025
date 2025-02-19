@@ -13,24 +13,43 @@ const Flyout = () => {
   const handleDownload = () => {
     if (selectedItems.length === 0) return;
 
-    const csvContent =
-      'data:text/csv;charset=utf-8,' +
-      ['Name,Birth Year,Gender,Height,Mass,Eye Color,Homeworld,URL']
-        .concat(
-          selectedItems.map(
-            (person) =>
-              `${person.name},${person.birth_year},${person.gender},${person.height},${person.mass},${person.eye_color},${person.homeworld},${person.url}`
-          )
-        )
-        .join('\n');
+    const delimiter = ';';
+    const headers = [
+      'Name',
+      'Birth Year',
+      'Gender',
+      'Height',
+      'Mass',
+      'Eye Color',
+      'Homeworld',
+      'URL',
+    ];
 
-    const encodedUri = encodeURI(csvContent);
+    const csvRows = selectedItems.map((person) =>
+      [
+        person.name,
+        person.birth_year,
+        person.gender,
+        person.height,
+        person.mass,
+        person.eye_color,
+        person.homeworld,
+        person.url,
+      ]
+        .map((value) => `"${value}"`)
+        .join(delimiter)
+    );
+
+    const csvContent =
+      '\uFEFF' + [headers.join(delimiter), ...csvRows].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
-    link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `${selectedItems.length}_persons.csv`);
-    document.body.appendChild(link);
+    link.href = url;
+    link.download = `${selectedItems.length}_persons.csv`;
     link.click();
-    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   if (selectedItems.length === 0) return null;
