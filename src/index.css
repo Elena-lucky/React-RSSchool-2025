@@ -54,7 +54,7 @@ button:disabled {
 
 [data-theme='light'] {
   color: #213547;
-  background-color: #ffffff;
+  background-color: #f1f0f0;
   background: url(assets/background-light.jpg) no-repeat;
   background-size: cover;
 }

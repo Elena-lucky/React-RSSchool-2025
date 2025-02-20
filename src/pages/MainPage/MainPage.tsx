@@ -25,6 +25,7 @@ const MainPage = () => {
   const {
     data: apiResponse,
     isLoading,
+    isFetching,
     isError,
     error,
   } = useGetPersonQuery({ query, page: currentPage });
@@ -66,7 +67,7 @@ const MainPage = () => {
         className={`${styles.content} ${isDetailsPage ? styles.splitView : ''}`}
       >
         <div className={styles.leftSection}>
-          {isLoading && <Spinner />}
+          {(isLoading || isFetching) && <Spinner />}
           {isError && <p>Error: {error?.toString()}</p>} {}
           {apiResponse?.results.length > 0 ? (
             <Result data={apiResponse} />
