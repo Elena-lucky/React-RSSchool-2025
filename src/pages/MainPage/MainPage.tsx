@@ -1,47 +1,41 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import { Outlet, useSearchParams, useLocation } from 'react-router-dom';
 import useSearchQuery from '../../hooks/useSearchQuery';
 import Search from '../../components/search/Search';
 import Result from '../../components/result/Result';
 import Spinner from '../../components/spinner/Spinner';
 import Pagination from '../../components/pagination/Pagination';
-import Fallback from '../../components/fallback/Fallback';
-import { fetchSearchResults } from '../../services/Api';
-import { ApiResponse } from '../../utils/types';
+import Flyout from '../../components/flyout/Flyout';
+import { useGetPersonQuery } from '../../services/Api/apiSlice';
+import { useTheme } from '../../context/ThemeContext';
+import ThemeToggle from '../../components/themeToggle/ThemeToggle';
 import styles from './MainPage.module.css';
 
 const MainPage = () => {
   const [query, setQuery] = useSearchQuery();
-  const [result, setResult] = useState<ApiResponse | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
+  const { theme, toggleTheme } = useTheme();
 
-  const currentPage = Number(searchParams.get('page')) || 1;
-  const isDetailsPage = location.pathname.startsWith('/person/');
+  const currentPageFromState = location.state?.currentPage;
+  const currentPage =
+    currentPageFromState || Number(searchParams.get('page')) || 1;
+  const isDetailsPage = location.pathname.startsWith('/people/');
 
-  const fetchData = useCallback(async (searchQuery: string, page: number) => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const data = await fetchSearchResults(searchQuery, page);
-      setResult(data);
-    } catch {
-      setError('Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  const {
+    data: apiResponse,
+    isLoading,
+    isFetching,
+    isError,
+    error,
+  } = useGetPersonQuery({ query, page: currentPage });
 
   const handleSearch = useCallback(
     (searchQuery: string) => {
       setQuery(searchQuery);
       setSearchParams({ query: searchQuery, page: '1' });
-      fetchData(searchQuery, 1);
     },
-    [setQuery, setSearchParams, fetchData]
+    [setQuery, setSearchParams]
   );
 
   const handlePageChange = useCallback(
@@ -50,16 +44,9 @@ const MainPage = () => {
         ...Object.fromEntries(prevParams.entries()),
         page: String(newPage),
       }));
-      fetchData(query, newPage);
     },
-    [query, setSearchParams, fetchData]
+    [setSearchParams]
   );
-
-  useEffect(() => {
-    if (!isDetailsPage) {
-      fetchData(query, currentPage);
-    }
-  }, [query, currentPage, fetchData]);
 
   return (
     <div className={styles.container}>
@@ -72,15 +59,18 @@ const MainPage = () => {
         discover key facts, hidden secrets, and more about the person you are
         looking for.
       </p>
-      <Search onSearchClick={handleSearch} />
+      <div className={styles.usersInput}>
+        <Search onSearchClick={handleSearch} />
+        <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
+      </div>
       <div
         className={`${styles.content} ${isDetailsPage ? styles.splitView : ''}`}
       >
         <div className={styles.leftSection}>
-          {isLoading && <Spinner />}
-          {error && <p>{error}</p>}
-          {result && result.results.length > 0 ? (
-            <Result data={result} />
+          {(isLoading || isFetching) && <Spinner />}
+          {isError && <p>Error: {error?.toString()}</p>} {}
+          {apiResponse?.results.length > 0 ? (
+            <Result data={apiResponse} />
           ) : (
             <p>No results found</p>
           )}
@@ -93,15 +83,16 @@ const MainPage = () => {
           </div>
         )}
       </div>
-      {result && result.count > 0 && (
+      {apiResponse?.count > 0 && (
         <Pagination
           currentPage={currentPage}
-          hasPrevious={!!result.previous}
-          hasNext={!!result.next}
+          hasPrevious={!!apiResponse.previous}
+          hasNext={!!apiResponse.next}
           onPageChange={handlePageChange}
         />
       )}
-      <Fallback />
+      {}
+      <Flyout />
     </div>
   );
 };

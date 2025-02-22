@@ -8,7 +8,7 @@
     "module": "ESNext",
     "skipLibCheck": true,
     "baseUrl": "./",
-    "types": ["vitest"],
+    "types": ["vitest/globals"],
     "esModuleInterop": true,
 
     /* Bundler mode */

@@ -9,5 +9,9 @@ export default defineConfig({
       localsConvention: 'camelCase',
     },
   },
+  test: {
+    environment: 'jsdom',
+    globals: true,
+  },
   base: '',
 });

@@ -8,6 +8,7 @@ interface PropsEB {
 interface StateEB {
   hasError: boolean;
   errorMessage: string | null;
+  error?: Error;
 }
 
 class ErrorBoundary extends Component<PropsEB, StateEB> {
@@ -35,7 +36,7 @@ class ErrorBoundary extends Component<PropsEB, StateEB> {
         <div>
           <h1 className={styles.error}>Something went wrong.</h1>
           {this.state.errorMessage && (
-            <p className={styles.errorMessage}>{this.state.errorMessage}</p>
+            <p className={styles.errorMessage}>{this.state.error?.message}</p>
           )}
           <button onClick={this.handleReset}>Try Again</button>
         </div>

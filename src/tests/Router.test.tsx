@@ -1,13 +1,22 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { ThemeProvider } from '../context/ThemeContext';
 import Router from '../routing/Router';
+import store from '../store/store';
 
 describe('Router', () => {
   it('should render NotFoundPage for an unknown path', () => {
     render(
-      <MemoryRouter initialEntries={['/unknown-path']}>
-        <Router />
-      </MemoryRouter>
+      <Provider store={store}>
+        {' '}
+        {}
+        <ThemeProvider>
+          <MemoryRouter initialEntries={['/unknown-path']}>
+            <Router />
+          </MemoryRouter>
+        </ThemeProvider>
+      </Provider>
     );
 
     expect(
@@ -20,9 +29,15 @@ describe('Router', () => {
 
   it('should render MainPage for the root path', () => {
     render(
-      <MemoryRouter initialEntries={['/']}>
-        <Router />
-      </MemoryRouter>
+      <Provider store={store}>
+        {' '}
+        {}
+        <ThemeProvider>
+          <MemoryRouter initialEntries={['/']}>
+            <Router />
+          </MemoryRouter>
+        </ThemeProvider>
+      </Provider>
     );
 
     expect(

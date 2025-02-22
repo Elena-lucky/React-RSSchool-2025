@@ -1,40 +1,25 @@
-import { useEffect, useCallback, useState, useRef } from 'react';
+import { useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Person } from '../../utils/types';
+import { useGetPersonByIdQuery } from '../../services/Api/apiSlice';
 import Spinner from '../../components/spinner/Spinner';
 import styles from './DetailsPage.module.css';
 
 const DetailsPage = () => {
   const { id } = useParams<{ id: string }>();
-  const [person, setPerson] = useState<Person | null>(null);
-  const [loading, setLoading] = useState(true);
   const detailsRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const loadPerson = async () => {
-      if (!id) return;
-      setLoading(true);
-      try {
-        const response = await fetch(`https://swapi.dev/api/people/${id}/`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch');
-        }
-        const personData: Person = await response.json();
-        setPerson(personData);
-      } catch (error) {
-        console.error('Error fetching person details:', error);
-        setPerson(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadPerson();
-  }, [id]);
+  const {
+    data: person,
+    isLoading,
+    isError,
+    error,
+  } = useGetPersonByIdQuery(id || '', {
+    skip: !id,
+  });
 
   const handleClose = useCallback(() => {
-    navigate('/');
+    navigate(-1);
   }, [navigate]);
 
   useEffect(() => {
@@ -51,7 +36,7 @@ const DetailsPage = () => {
     return () => document.removeEventListener('mousedown', handleOutsideClick);
   }, [handleClose]);
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className={styles.results}>
         <div className={styles.spinnerContainer}>
@@ -60,6 +45,11 @@ const DetailsPage = () => {
       </div>
     );
   }
+
+  if (isError) {
+    return <p>Error: {error.toString()}</p>;
+  }
+
   if (!person) return <p>Person not found</p>;
 
   return (

@@ -1,50 +1,111 @@
 import { render, screen, waitFor } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
-import { vi } from 'vitest';
+import userEvent from '@testing-library/user-event';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import MainPage from '../pages/MainPage/MainPage';
-import { fetchSearchResults } from '../services/Api';
+import { useGetPersonQuery } from '../services/Api/apiSlice';
+import { ThemeProvider } from '../context/ThemeContext';
+import { Provider } from 'react-redux';
+import store from '../store/store';
 
-vi.mock('../services/Api', () => ({
-  fetchSearchResults: vi.fn(),
-}));
+vi.mock('../services/Api/apiSlice', async (importOriginal) => {
+  const mod = await importOriginal<typeof import('../services/Api/apiSlice')>();
+  return {
+    ...mod,
+    useGetPersonQuery: vi.fn(),
+  };
+});
 
 describe('MainPage Component', () => {
+  const setup = (initialEntries = ['/']) => {
+    return render(
+      <Provider store={store}>
+        {' '}
+        {}
+        <ThemeProvider>
+          <MemoryRouter initialEntries={initialEntries}>
+            <Routes>
+              <Route path="/" element={<MainPage />} />
+              <Route path="/people/:id" element={<div>Details Page</div>} />
+            </Routes>
+          </MemoryRouter>
+        </ThemeProvider>
+      </Provider>
+    );
+  };
+
   beforeEach(() => {
-    vi.clearAllMocks();
+    (useGetPersonQuery as jest.Mock).mockReturnValue({
+      data: { results: [], count: 0 },
+      isLoading: false,
+      isFetching: false,
+      isError: false,
+      error: null,
+    });
   });
 
-  it('should render the component and its main elements', () => {
-    render(
-      <MemoryRouter>
-        <MainPage />
-      </MemoryRouter>
-    );
-
+  it('renders the greeting message', () => {
+    setup();
     expect(
       screen.getByText(/Welcome to the Star Wars Universe Explorer!/i)
     ).toBeInTheDocument();
-
-    expect(
-      screen.getByPlaceholderText(/What are you searching?/i)
-    ).toBeInTheDocument();
-
-    const searchButtons = screen.getAllByText(/Search/i);
-    expect(searchButtons[0]).toBeInTheDocument();
   });
 
-  it('should display error message if API request fails', async () => {
-    vi.mocked(fetchSearchResults).mockRejectedValue(
-      new Error('Failed to fetch')
-    );
+  it('toggles theme when theme toggle is clicked', async () => {
+    setup();
 
-    render(
-      <MemoryRouter>
-        <MainPage />
-      </MemoryRouter>
-    );
+    const themeToggle = screen.getByRole('checkbox');
+    userEvent.click(themeToggle);
+    await waitFor(() => expect(themeToggle).toBeChecked());
+  });
+
+  it('updates search query on search', async () => {
+    setup();
+
+    const searchInput = screen.getByPlaceholderText(/search/i);
+    const searchButton = screen.getByRole('button', { name: /search/i });
+
+    await userEvent.type(searchInput, 'Luke');
+    expect(searchInput).toHaveValue('Luke');
+    userEvent.click(searchButton);
 
     await waitFor(() => {
-      expect(screen.getByText(/Please try again./i)).toBeInTheDocument();
+      expect(useGetPersonQuery as jest.Mock).toHaveBeenCalledWith({
+        query: 'Luke',
+        page: 1,
+      });
     });
+  });
+
+  it('displays loading spinner when fetching data', () => {
+    (useGetPersonQuery as jest.Mock).mockReturnValue({ isLoading: true });
+    setup();
+    expect(screen.getByRole('progressbar')).toBeInTheDocument();
+  });
+
+  it('displays error message on fetch error', () => {
+    (useGetPersonQuery as jest.Mock).mockReturnValue({
+      isError: true,
+      error: new Error('Failed to fetch'),
+    });
+
+    setup();
+
+    expect(screen.getByText(/Error: Failed to fetch/i)).toBeInTheDocument();
+  });
+
+  it('navigates to details page when a result is clicked', async () => {
+    (useGetPersonQuery as jest.Mock).mockReturnValue({
+      data: {
+        results: [
+          { name: 'Luke Skywalker', url: 'http://swapi.dev/api/people/1/' },
+        ],
+        count: 1,
+      },
+    });
+    setup();
+    userEvent.click(screen.getByText(/Luke Skywalker/i));
+    await waitFor(() =>
+      expect(screen.getByText(/Details Page/i)).toBeInTheDocument()
+    );
   });
 });
