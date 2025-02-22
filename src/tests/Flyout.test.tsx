@@ -97,4 +97,18 @@ describe('Flyout Component', () => {
     const state = store.getState().selectedItems;
     expect(state.selectedItems).toHaveLength(0);
   });
+  it('creates and downloads CSV file when "Download" button is clicked', () => {
+    setup({ selectedItems: mockSelectedItems });
+
+    const downloadButton = screen.getByText(/Download/i);
+    fireEvent.click(downloadButton);
+
+    expect(global.URL.createObjectURL).toHaveBeenCalled();
+    expect(global.URL.revokeObjectURL).toHaveBeenCalled();
+    const downloadLink = screen.getByRole('link', { hidden: true });
+    expect(downloadLink).toHaveAttribute(
+      'download',
+      `${mockSelectedItems.length}_persons.csv`
+    );
+  });
 });

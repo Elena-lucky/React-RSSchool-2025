@@ -1,14 +1,18 @@
 import clsx from 'clsx';
+import { useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearSelectedItems } from '../../store/selectedItemsSlice';
 import { RootState } from '../../store/store';
+import { Person } from '../../utils/types';
 import styles from './Flyout.module.css';
 
 const Flyout = () => {
   const dispatch = useDispatch();
   const selectedItems = useSelector(
-    (state: RootState) => state.selectedItems.selectedItems
+    (state: RootState) => state.selectedItems.selectedItems as Person[]
   );
+
+  const downloadLinkRef = useRef<HTMLAnchorElement | null>(null);
 
   const handleDownload = () => {
     if (selectedItems.length === 0) return;
@@ -45,10 +49,12 @@ const Flyout = () => {
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `${selectedItems.length}_persons.csv`;
-    link.click();
+    if (downloadLinkRef.current) {
+      downloadLinkRef.current.href = url;
+      downloadLinkRef.current.download = `${selectedItems.length}_persons.csv`;
+      downloadLinkRef.current.click();
+    }
+
     URL.revokeObjectURL(url);
   };
 
@@ -74,6 +80,11 @@ const Flyout = () => {
         <div className={clsx(styles.line, styles.bottoml)}></div>
         <div className={clsx(styles.line, styles.rightl)}></div>
       </div>
+      <a
+        ref={downloadLinkRef}
+        style={{ display: 'none' }}
+        aria-label="Download link"
+      ></a>
     </div>
   );
 };
