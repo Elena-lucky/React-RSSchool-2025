@@ -1,13 +1,14 @@
 import { useEffect, useCallback, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useGetPersonByIdQuery } from '../../services/Api/apiSlice';
-import Spinner from '../../components/spinner/Spinner';
-import styles from './DetailsPage.module.css';
+import { useRouter } from 'next/router';
+import { useGetPersonByIdQuery } from '../../services/Api/apiHooks';
+import Spinner from '../spinner/Spinner';
+import styles from './Details.module.css';
 
-const DetailsPage = () => {
-  const { id } = useParams<{ id: string }>();
+const Details = () => {
+  const router = useRouter();
+  const { slug } = router.query;
+  const id = slug?.[0];
   const detailsRef = useRef<HTMLDivElement | null>(null);
-  const navigate = useNavigate();
 
   const {
     data: person,
@@ -19,8 +20,8 @@ const DetailsPage = () => {
   });
 
   const handleClose = useCallback(() => {
-    navigate(-1);
-  }, [navigate]);
+    router.back();
+  }, [router]);
 
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {
@@ -83,4 +84,4 @@ const DetailsPage = () => {
   );
 };
 
-export default DetailsPage;
+export default Details;

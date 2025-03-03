@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import DetailsPage from '../pages/DetailsPage/DetailsPage';
+import DetailsPage from '../pages/DetailsPage';
 import { useGetPersonByIdQuery } from '../services/Api/apiSlice';
 import { vi } from 'vitest';
 

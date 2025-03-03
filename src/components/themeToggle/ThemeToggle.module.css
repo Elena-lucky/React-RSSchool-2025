@@ -1,4 +1,4 @@
-.theme-toggle {
+.themeToggle {
   margin-left: 15rem;
   display: flex;
   align-items: center;
@@ -6,11 +6,11 @@
   cursor: pointer;
 }
 
-.theme-checkbox {
+.themeCheckbox {
   display: none;
 }
 
-.theme-icons {
+.themeIcons {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -25,14 +25,14 @@
     color 0.3s;
 }
 
-.theme-icons:hover {
+.themeIcons:hover {
   background-color: var(--text-color);
   color: var(--background-color);
   scale: 1.1;
   transition: 0.3s;
 }
 
-.theme-icons svg {
+.themeIcons svg {
   width: 36px;
   height: 36px;
 }

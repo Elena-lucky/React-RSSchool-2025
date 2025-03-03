@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { vi } from 'vitest';
 import { useNavigate } from 'react-router-dom';
-import NotFoundPage from '../pages/NotFoundPage/NotFoundPage';
+import NotFoundPage from '../pages/404';
 
 vi.mock('react-router-dom', () => ({
   useNavigate: vi.fn(),

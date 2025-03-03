@@ -1,13 +1,14 @@
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/router';
+import styles from '../styles/404.module.css';
 
 const NotFoundPage = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
   return (
-    <div>
+    <div className={styles.notFoundWrapper}>
       <p>Oops! This page was not found.</p>
       <button
         onClick={() => {
-          navigate('/');
+          void router.push('/');
         }}
       >
         Back to Main Page

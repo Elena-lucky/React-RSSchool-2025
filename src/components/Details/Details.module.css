@@ -3,7 +3,7 @@
   margin-top: 25px;
 }
 
-.result-item {
+.resultItem {
   position: relative;
   margin: 0 auto;
   border: rgb(73, 73, 73) 1px solid;
@@ -12,7 +12,7 @@
   box-shadow: 0px 2px 5px rgba(22, 22, 22, 0.1);
 }
 
-[data-theme='light'] .result-item {
+[data-theme='light'] .resultItem {
   background: linear-gradient(
     to bottom,
     rgba(240, 240, 240, 0.8),
@@ -20,7 +20,7 @@
   );
 }
 
-[data-theme='dark'] .result-item {
+[data-theme='dark'] .resultItem {
   background: linear-gradient(
     to bottom,
     rgba(6, 3, 48, 0.8),
@@ -28,12 +28,12 @@
   );
 }
 
-.item-details {
+.itemDetails {
   text-align: center;
   list-style: none;
 }
 
-.close-button {
+.closeButton {
   position: absolute;
   top: 10px;
   right: 10px;

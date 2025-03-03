@@ -1,24 +1,25 @@
-import { useCallback } from 'react';
-import useSearchQuery from '../../hooks/useSearchQuery';
+import { useState, useRef } from 'react';
+import { useRouter } from 'next/router';
 import styles from './Search.module.css';
 
 type SearchProps = {
-  onSearchClick: (query: string) => void;
+  searchQuery?: string;
 };
 
-const Search = ({ onSearchClick }: SearchProps) => {
-  const [query, setQuery, resetQuery] = useSearchQuery();
+const Search = ({ searchQuery = '' }: SearchProps) => {
+  const router = useRouter();
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [inputValue, setInputValue] = useState(searchQuery);
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(event.target.value);
-  };
-
-  const handleSearch = useCallback(() => {
-    const trimmedQuery = query.trim();
+  const handleSearch = () => {
+    const trimmedQuery = inputValue.trim();
     if (trimmedQuery) {
-      onSearchClick(trimmedQuery);
+      router.push({
+        pathname: '/',
+        query: { query: trimmedQuery, page: 1 },
+      });
     }
-  }, [query, onSearchClick]);
+  };
 
   const handleEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
@@ -27,23 +28,24 @@ const Search = ({ onSearchClick }: SearchProps) => {
   };
 
   const handleReset = () => {
-    resetQuery();
-    window.location.reload();
+    setInputValue('');
+    router.push({ pathname: '/', query: {} });
   };
 
   return (
     <div>
       <input
+        ref={inputRef}
         type="text"
-        value={query}
-        onChange={handleInputChange}
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
         onKeyDown={handleEnter}
         placeholder="What are you searching?"
       />
       <button
         className={styles.searchButton}
         onClick={handleSearch}
-        disabled={!query.trim()}
+        disabled={!inputValue.trim()}
       >
         Search
       </button>

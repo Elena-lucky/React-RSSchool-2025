@@ -3,7 +3,7 @@
   font-weight: bold;
 }
 
-.users-input {
+.usersInput {
   display: flex;
   justify-content: center;
 }
@@ -14,30 +14,30 @@
   gap: 20px;
 }
 
-.left-section {
+.leftSection {
   width: 100%;
   overflow-y: auto;
   transition: width 0.3s ease;
 }
 
-.right-section {
+.rightSection {
   width: 0;
   overflow: hidden;
   transition: width 0.3s ease;
 }
 
-.split-view .left-section {
+.splitView .leftSection {
   width: 50%;
 }
 
-.split-view .right-section {
+.splitView .rightSection {
   width: 50%;
   border-left: 2px solid #ccc;
   padding-left: 20px;
   overflow-y: auto;
 }
 
-.no-results {
+.noResults {
   text-align: center;
   font-size: 1.5rem;
 }
