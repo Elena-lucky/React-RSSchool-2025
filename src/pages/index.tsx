@@ -1,13 +1,8 @@
 import { useRouter } from 'next/router';
-import {
-  useEffect,
-  useState,
-  useCallback,
-  type ReactNode,
-  useRef,
-} from 'react';
+import { useEffect, useState, useCallback, type ReactNode } from 'react';
 import Search from '../components/search/Search';
 import Result from '../components/result/Result';
+import Details from '../components/Details/Details';
 import Spinner from '../components/spinner/Spinner';
 import Pagination from '../components/pagination/Pagination';
 import Flyout from '../components/flyout/Flyout';
@@ -25,7 +20,7 @@ import styles from '../styles/MainPage.module.css';
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) =>
     async (context): Promise<{ props: object }> => {
-      const { query, page } = context.query;
+      const { query, page, details } = context.query;
 
       const searchQuery = typeof query === 'string' ? query : '';
       const currentPage =
@@ -41,25 +36,43 @@ export const getServerSideProps = wrapper.getServerSideProps(
         props: {
           searchQuery,
           currentPage,
+          details: details || null,
         },
       };
     }
 );
 
-const MainPage = ({ searchQuery, currentPage }: MainPageProps): ReactNode => {
+const MainPage = ({
+  searchQuery,
+  currentPage,
+  details,
+}: MainPageProps): ReactNode => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const { query: routerQuery } = router;
   const { theme, toggleTheme } = useTheme();
-  const listRef = useRef(null);
   const { data } = apiSlice.useGetPersonQuery({
     query: searchQuery,
     page: currentPage,
   });
 
-  const isDetailsPage =
-    typeof window !== 'undefined' &&
-    window.location.pathname.startsWith('/people/[id]');
+  const handlePersonClick = (personId: string) => {
+    router.push({
+      pathname: '/',
+      query: { ...router.query, details: personId },
+    });
+  };
+
+  const handleCloseDetails = () => {
+    const { details, ...restQuery } = router.query;
+    router.push({ pathname: '/', query: restQuery });
+  };
+
+  const handleLeftSectionClick = () => {
+    if (details) {
+      handleCloseDetails();
+    }
+  };
 
   const handlePageChange = useCallback(
     (newPage: number) => {
@@ -98,25 +111,23 @@ const MainPage = ({ searchQuery, currentPage }: MainPageProps): ReactNode => {
         <Search searchQuery={searchQuery} />
         <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
       </div>
-      <div
-        className={`${styles.content} ${isDetailsPage ? styles.splitView : ''}`}
-      >
-        <div className={styles.leftSection}>
+      <div className={`${styles.content}`}>
+        <div className={styles.leftSection} onClick={handleLeftSectionClick}>
           {loading && <Spinner />}
           {data && data.results.length > 0 ? (
             <Result
               searchQuery={searchQuery}
               currentPage={currentPage}
-              ref={listRef}
+              onPersonClick={handlePersonClick}
             />
           ) : (
             <p>No results found</p>
           )}
         </div>
-        {isDetailsPage && (
-          <div
-            className={`${styles.rightSection} ${isDetailsPage ? styles.visible : ''}`}
-          ></div>
+        {details && (
+          <div className={styles.rightSection}>
+            <Details personId={details} onClose={handleCloseDetails} />
+          </div>
         )}
       </div>
       {data && data.count > 0 && (

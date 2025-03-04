@@ -30,4 +30,5 @@ export interface MainPageProps {
   apiResponse: ApiResponse | null;
   searchQuery: string;
   currentPage: number;
+  details: string;
 }

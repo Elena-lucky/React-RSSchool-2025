@@ -10,31 +10,20 @@
 
 .content {
   display: flex;
-  flex-grow: 1;
   gap: 20px;
 }
 
 .leftSection {
-  width: 100%;
+  flex: 1;
   overflow-y: auto;
   transition: width 0.3s ease;
 }
 
 .rightSection {
-  width: 0;
-  overflow: hidden;
-  transition: width 0.3s ease;
-}
-
-.splitView .leftSection {
-  width: 50%;
-}
-
-.splitView .rightSection {
-  width: 50%;
+  flex: 1;
   border-left: 2px solid #ccc;
   padding-left: 20px;
-  overflow-y: auto;
+  transition: width 0.3s ease;
 }
 
 .noResults {

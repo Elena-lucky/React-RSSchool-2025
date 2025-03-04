@@ -30,7 +30,7 @@ export const apiSlice = createApi({
       },
     }),
     getPersonById: builder.query<Person, string>({
-      query: (id) => `/people/${id}/`,
+      query: (id) => `/people/${id}`,
     }),
   }),
   extractRehydrationInfo(

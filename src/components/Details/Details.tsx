@@ -1,41 +1,30 @@
-import { useEffect, useCallback, useRef } from 'react';
-import { useRouter } from 'next/router';
+import { useEffect, useRef } from 'react';
 import { useGetPersonByIdQuery } from '../../services/Api/apiHooks';
 import Spinner from '../spinner/Spinner';
 import styles from './Details.module.css';
 
-const Details = () => {
-  const router = useRouter();
-  const { slug } = router.query;
-  const id = slug?.[0];
+interface DetailsProps {
+  personId: string;
+  onClose: () => void;
+}
+
+const Details = ({ personId, onClose }: DetailsProps) => {
+  const { data: person, isLoading, isError } = useGetPersonByIdQuery(personId);
   const detailsRef = useRef<HTMLDivElement | null>(null);
-
-  const {
-    data: person,
-    isLoading,
-    isError,
-    error,
-  } = useGetPersonByIdQuery(id || '', {
-    skip: !id,
-  });
-
-  const handleClose = useCallback(() => {
-    router.back();
-  }, [router]);
 
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {
       if (
-        detailsRef.current &&
-        !detailsRef.current.contains(event.target as Node)
+        event.target &&
+        !(event.target as Element).closest(`.${styles.rightSection}`)
       ) {
-        handleClose();
+        onClose();
       }
     };
 
     document.addEventListener('mousedown', handleOutsideClick);
     return () => document.removeEventListener('mousedown', handleOutsideClick);
-  }, [handleClose]);
+  }, [onClose]);
 
   if (isLoading) {
     return (
@@ -48,7 +37,7 @@ const Details = () => {
   }
 
   if (isError) {
-    return <p>Error: {error.toString()}</p>;
+    return <p>Oh sorry! There are some errors</p>;
   }
 
   if (!person) return <p>Person not found</p>;
@@ -56,7 +45,7 @@ const Details = () => {
   return (
     <div className={styles.results} ref={detailsRef}>
       <div className={styles.resultItem}>
-        <button className={styles.closeButton} onClick={handleClose}>
+        <button className={styles.closeButton} onClick={onClose}>
           ✖
         </button>
         <h2 className={styles.itemName}>{person.name}</h2>

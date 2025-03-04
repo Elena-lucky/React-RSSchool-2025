@@ -2,8 +2,6 @@ import type { ReactNode } from 'react';
 import { forwardRef } from 'react';
 import { Person } from '../../utils/types';
 import Checkbox from '../../components/checkbox/Checkbox';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleItem } from '../../store/selectedItemsSlice';
 import { useGetPersonQuery } from '../../services/Api/apiSlice';
@@ -13,13 +11,13 @@ import styles from './Result.module.css';
 interface Props {
   searchQuery: string;
   currentPage: number;
+  onPersonClick: (personId: string) => void;
 }
 
 const Result = forwardRef<HTMLUListElement, Props>(function Result(
-  { searchQuery, currentPage },
+  { searchQuery, currentPage, onPersonClick },
   listRef
 ): ReactNode {
-  const router = useRouter();
   const dispatch = useDispatch();
   const selectedItems = useSelector(
     (state: RootState) => state.selectedItems.selectedItems
@@ -33,6 +31,7 @@ const Result = forwardRef<HTMLUListElement, Props>(function Result(
     query: searchQuery,
     page: currentPage,
   });
+
   const handleCheckboxChange = (person: Person) => {
     dispatch(toggleItem(person));
   };
@@ -64,12 +63,9 @@ const Result = forwardRef<HTMLUListElement, Props>(function Result(
 
         return (
           <div key={personId} className={styles.resultItemWrapper}>
-            <Link
-              href={{
-                pathname: `/people/${personId}`,
-                query: { from: router.pathname, currentPage },
-              }}
+            <div
               className={styles.resultItem}
+              onClick={() => onPersonClick(personId)}
             >
               <h2 className={styles.itemName}>{person.name}</h2>
               <ul ref={listRef}>
@@ -86,7 +82,7 @@ const Result = forwardRef<HTMLUListElement, Props>(function Result(
                   The eye color: {person.eye_color}
                 </li>
               </ul>
-            </Link>
+            </div>
             <Checkbox
               checked={selectedItems.some((item) => item.url === person.url)}
               onChange={() => handleCheckboxChange(person)}
