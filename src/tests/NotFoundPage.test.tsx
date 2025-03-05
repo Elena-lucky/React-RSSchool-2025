@@ -1,35 +1,42 @@
 import { render, screen, fireEvent } from '@testing-library/react';
+import NotFoundPage from '../pages/404';
+import { useRouter } from 'next/router';
 import { vi } from 'vitest';
-import { useNavigate } from 'react-router-dom';
-import NotFoundPage from '../pages/NotFoundPage/NotFoundPage';
 
-vi.mock('react-router-dom', () => ({
-  useNavigate: vi.fn(),
+vi.mock('next/router', () => ({
+  useRouter: vi.fn(),
 }));
 
 describe('NotFoundPage Component', () => {
-  it('should render the "Not Found" message and a button', () => {
-    const mockNavigate = vi.fn();
-    (useNavigate as jest.Mock).mockReturnValue(mockNavigate);
+  const pushMock = vi.fn();
 
-    render(<NotFoundPage />);
-
-    const message = screen.getByText('Oops! This page was not found.');
-    expect(message).toBeInTheDocument();
-
-    const button = screen.getByText('Back to Main Page');
-    expect(button).toBeInTheDocument();
+  beforeEach(() => {
+    (useRouter as jest.Mock).mockReturnValue({
+      push: pushMock,
+    });
   });
 
-  it('should navigate to the home page when the button is clicked', () => {
-    const mockNavigate = vi.fn();
-    (useNavigate as jest.Mock).mockReturnValue(mockNavigate);
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
 
+  it('renders the 404 message and button', () => {
     render(<NotFoundPage />);
 
-    const button = screen.getByText('Back to Main Page');
+    expect(
+      screen.getByText(/Oops! This page was not found./i)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /Back to Main Page/i })
+    ).toBeInTheDocument();
+  });
+
+  it('navigates to the home page when the button is clicked', () => {
+    render(<NotFoundPage />);
+
+    const button = screen.getByRole('button', { name: /Back to Main Page/i });
     fireEvent.click(button);
 
-    expect(mockNavigate).toHaveBeenCalledWith('/');
+    expect(pushMock).toHaveBeenCalledWith('/');
   });
 });

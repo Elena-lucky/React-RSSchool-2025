@@ -14,7 +14,7 @@ function Pagination({
   onPageChange,
 }: PaginationProps) {
   return (
-    <div className={styles.pagination}>
+    <div className={styles.pagination} aria-label="navigation">
       <button
         disabled={!hasPrevious}
         onClick={() => onPageChange(currentPage - 1)}
@@ -22,7 +22,11 @@ function Pagination({
         Previous
       </button>
       <span>Page {currentPage}</span>
-      <button disabled={!hasNext} onClick={() => onPageChange(currentPage + 1)}>
+      <button
+        disabled={!hasNext}
+        aria-label="Next"
+        onClick={() => onPageChange(currentPage + 1)}
+      >
         Next
       </button>
     </div>

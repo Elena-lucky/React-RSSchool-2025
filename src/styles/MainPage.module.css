@@ -1,0 +1,32 @@
+.greeting {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.usersInput {
+  display: flex;
+  justify-content: center;
+}
+
+.content {
+  display: flex;
+  gap: 20px;
+}
+
+.leftSection {
+  flex: 1;
+  overflow-y: auto;
+  transition: width 0.3s ease;
+}
+
+.rightSection {
+  flex: 1;
+  border-left: 2px solid #ccc;
+  padding-left: 20px;
+  transition: width 0.3s ease;
+}
+
+.noResults {
+  text-align: center;
+  font-size: 1.5rem;
+}
