@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { useGetPersonByIdQuery } from '../../services/Api/apiHooks';
+import { useGetPersonByIdQuery } from '../../services/Api/apiSlice';
 import Spinner from '../spinner/Spinner';
 import styles from './Details.module.css';
 
@@ -15,8 +15,8 @@ const Details = ({ personId, onClose }: DetailsProps) => {
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {
       if (
-        event.target &&
-        !(event.target as Element).closest(`.${styles.rightSection}`)
+        detailsRef.current &&
+        !detailsRef.current.contains(event.target as Node)
       ) {
         onClose();
       }

@@ -1,67 +1,101 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { vi } from 'vitest';
 import Search from '../components/search/Search';
-import useSearchQuery from '../hooks/useSearchQuery';
+import { useRouter } from 'next/router';
+import { vi } from 'vitest';
 
-type UseSearchQueryReturnType = [string, () => void, () => void];
-beforeEach(() => {
-  localStorage.clear();
-});
-
-vi.mock('../hooks/useSearchQuery', async (importOriginal) => {
-  const actual = (await importOriginal()) as {
-    default: () => UseSearchQueryReturnType;
-  };
-  return {
-    ...actual,
-    default: vi.fn().mockReturnValue(['test query', vi.fn(), vi.fn()]),
-  };
-});
+vi.mock('next/router', () => ({
+  useRouter: vi.fn(),
+}));
 
 describe('Search Component', () => {
+  const pushMock = vi.fn();
+
   beforeEach(() => {
-    localStorage.clear();
+    (useRouter as jest.Mock).mockReturnValue({
+      push: pushMock,
+      query: {},
+    });
+  });
+
+  afterEach(() => {
     vi.clearAllMocks();
   });
 
-  it('should save the entered value to localStorage when the Search button is clicked', () => {
-    const setQueryMock = vi.fn();
-    const resetQueryMock = vi.fn();
-    (useSearchQuery as jest.Mock).mockReturnValue([
-      'test query',
-      setQueryMock,
-      resetQueryMock,
-    ]);
+  it('renders the search input and buttons', () => {
+    render(<Search />);
 
-    const onSearchClickMock = vi.fn();
-
-    render(<Search onSearchClick={onSearchClickMock} />);
-
-    const input = screen.getByPlaceholderText('What are you searching?');
-    const searchButton = screen.getByText('Search');
-
-    fireEvent.change(input, { target: { value: 'test query' } });
-
-    fireEvent.click(searchButton);
-
-    expect(onSearchClickMock).toHaveBeenCalledWith('test query');
+    expect(
+      screen.getByPlaceholderText(/What are you searching?/i)
+    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Search/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Reset/i })).toBeInTheDocument();
   });
 
-  it('should retrieve the value from localStorage upon mounting', () => {
-    localStorage.setItem('searchQuery', 'initial query');
-    const setQueryMock = vi.fn();
-    const resetQueryMock = vi.fn();
-    (useSearchQuery as jest.Mock).mockReturnValue([
-      'initial query',
-      setQueryMock,
-      resetQueryMock,
-    ]);
+  it('updates the input value when the user types', () => {
+    render(<Search />);
 
-    render(<Search onSearchClick={vi.fn()} />);
+    const input = screen.getByPlaceholderText(/What are you searching?/i);
+    fireEvent.change(input, { target: { value: 'Luke' } });
 
-    const input = screen.getByPlaceholderText(
-      'What are you searching?'
-    ) as HTMLInputElement;
-    expect(input.value).toBe('initial query');
+    expect(input).toHaveValue('Luke');
+  });
+
+  it('calls handleSearch when the search button is clicked', () => {
+    render(<Search />);
+
+    const input = screen.getByPlaceholderText(/What are you searching?/i);
+    fireEvent.change(input, { target: { value: 'Luke' } });
+
+    const searchButton = screen.getByRole('button', { name: /Search/i });
+    fireEvent.click(searchButton);
+
+    expect(pushMock).toHaveBeenCalledWith({
+      pathname: '/',
+      query: { query: 'Luke', page: 1 },
+    });
+  });
+
+  it('calls handleSearch when the Enter key is pressed', () => {
+    render(<Search />);
+
+    const input = screen.getByPlaceholderText(/What are you searching?/i);
+    fireEvent.change(input, { target: { value: 'Luke' } });
+    fireEvent.keyDown(input, { key: 'Enter' });
+
+    expect(pushMock).toHaveBeenCalledWith({
+      pathname: '/',
+      query: { query: 'Luke', page: 1 },
+    });
+  });
+
+  it('calls handleReset when the reset button is clicked', () => {
+    render(<Search />);
+
+    const input = screen.getByPlaceholderText(/What are you searching?/i);
+    fireEvent.change(input, { target: { value: 'Luke' } });
+
+    const resetButton = screen.getByRole('button', { name: /Reset/i });
+    fireEvent.click(resetButton);
+
+    expect(input).toHaveValue('');
+    expect(pushMock).toHaveBeenCalledWith({
+      pathname: '/',
+      query: {},
+    });
+  });
+
+  it('disables the search button when the input is empty', () => {
+    render(<Search />);
+
+    const input = screen.getByPlaceholderText(/What are you searching?/i);
+    const searchButton = screen.getByRole('button', { name: /Search/i });
+
+    expect(searchButton).toBeDisabled();
+
+    fireEvent.change(input, { target: { value: 'Luke' } });
+    expect(searchButton).not.toBeDisabled();
+
+    fireEvent.change(input, { target: { value: '' } });
+    expect(searchButton).toBeDisabled();
   });
 });

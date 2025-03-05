@@ -13,6 +13,7 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({ theme, toggleTheme }) => {
         type="checkbox"
         checked={theme === 'dark'}
         onChange={toggleTheme}
+        aria-label="Toggle Theme"
         className={styles.themeCheckbox}
       />
       <span className={styles.themeIcons}>

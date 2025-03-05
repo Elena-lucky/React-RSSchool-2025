@@ -1,104 +1,193 @@
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { render, screen, fireEvent } from '@testing-library/react';
 import Result from '../components/result/Result';
-import { Person } from '../utils/types';
+import { useGetPersonQuery } from '../services/Api/apiSlice';
+import { vi } from 'vitest';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import selectedItemsReducer from '../store/selectedItemsSlice';
 
-const store = configureStore({
+vi.mock('../services/Api/apiSlice', async (importOriginal) => {
+  const mod = await importOriginal<typeof import('../services/Api/apiSlice')>();
+  return {
+    ...mod,
+    useGetPersonQuery: vi.fn(),
+  };
+});
+
+const mockStore = configureStore({
   reducer: {
     selectedItems: selectedItemsReducer,
   },
 });
 
-const mockData = {
-  results: [
-    {
-      name: 'Luke Skywalker',
-      birth_year: '19BBY',
-      gender: 'male',
-      hair_color: 'blond',
-      eye_color: 'blue',
-      height: '172',
-      mass: '77',
-      skin_color: 'fair',
-      homeworld: 'Tatooine',
-      url: 'http://swapi.dev/api/people/1/',
-      created: '2014-12-09T13:50:51.644000Z',
-      edited: '2014-12-20T21:17:56.891000Z',
-    },
-    {
-      name: 'Leia Organa',
-      birth_year: '19BBY',
-      gender: 'female',
-      hair_color: 'brown',
-      eye_color: 'brown',
-      height: '150',
-      mass: '49',
-      skin_color: 'light',
-      homeworld: 'Alderaan',
-      url: 'http://swapi.dev/api/people/5/',
-      created: '2014-12-10T15:20:51.644000Z',
-      edited: '2014-12-20T21:17:56.891000Z',
-    },
-  ] as Person[],
-};
-
-const setup = () => {
-  return render(
-    <Provider store={store}>
-      <MemoryRouter initialEntries={['/']}>
-        {' '}
-        {}
-        <Routes>
-          <Route path="/" element={<Result data={mockData} />} />
-          <Route path="/people/:id" element={<div>Details Page</div>} />
-        </Routes>
-      </MemoryRouter>
-    </Provider>
-  );
-};
-
 describe('Result Component', () => {
-  it('renders the list of results', () => {
-    setup();
-    const birthYearElements = screen.getAllByText(/The birth year: 19BBY/i);
-    expect(birthYearElements.length).toBe(2);
+  const onPersonClickMock = vi.fn();
+
+  beforeEach(() => {
+    vi.clearAllMocks();
   });
 
-  it('renders no results message when data is empty', () => {
+  it('displays a loading message while fetching data', () => {
+    (useGetPersonQuery as jest.Mock).mockReturnValue({
+      data: undefined,
+      isSuccess: false,
+      isError: false,
+      isLoading: true,
+    });
+
     render(
-      <Provider store={store}>
-        <MemoryRouter initialEntries={['/']}>
-          {' '}
-          {}
-          <Result data={{ results: [] }} />
-        </MemoryRouter>
+      <Provider store={mockStore}>
+        <Result
+          searchQuery="Luke"
+          currentPage={1}
+          onPersonClick={onPersonClickMock}
+        />
       </Provider>
     );
+
+    expect(screen.getByText(/Loading.../i)).toBeInTheDocument();
+  });
+
+  it('displays "No results found" when no data is returned', () => {
+    (useGetPersonQuery as jest.Mock).mockReturnValue({
+      data: { results: [] },
+      isSuccess: true,
+      isError: false,
+      isLoading: false,
+    });
+
+    render(
+      <Provider store={mockStore}>
+        <Result
+          searchQuery="Luke"
+          currentPage={1}
+          onPersonClick={onPersonClickMock}
+        />
+      </Provider>
+    );
+
     expect(
       screen.getByText(/No results found. Please try another query./i)
     ).toBeInTheDocument();
   });
 
-  it('toggles checkbox when clicked', async () => {
-    setup();
-    const checkboxes = screen.getAllByRole('checkbox');
-    const firstCheckbox = checkboxes[0];
+  it('displays person details when data is successfully loaded', () => {
+    const mockData = {
+      results: [
+        {
+          name: 'Luke Skywalker',
+          birth_year: '19BBY',
+          gender: 'male',
+          hair_color: 'blond',
+          eye_color: 'blue',
+          url: 'https://swapi.dev/api/people/1/',
+        },
+      ],
+    };
 
-    await userEvent.click(firstCheckbox);
-    expect(firstCheckbox).toBeChecked();
+    (useGetPersonQuery as jest.Mock).mockReturnValue({
+      data: mockData,
+      isSuccess: true,
+      isError: false,
+      isLoading: false,
+    });
 
-    await userEvent.click(firstCheckbox);
-    expect(firstCheckbox).not.toBeChecked();
+    render(
+      <Provider store={mockStore}>
+        <Result
+          searchQuery="Luke"
+          currentPage={1}
+          onPersonClick={onPersonClickMock}
+        />
+      </Provider>
+    );
+
+    expect(screen.getByText(mockData.results[0].name)).toBeInTheDocument();
+    expect(
+      screen.getByText(`The birth year: ${mockData.results[0].birth_year}`)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(`The gender: ${mockData.results[0].gender}`)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(`The hair color: ${mockData.results[0].hair_color}`)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(`The eye color: ${mockData.results[0].eye_color}`)
+    ).toBeInTheDocument();
   });
 
-  it('navigates to details page when a result is clicked', async () => {
-    setup();
-    const link = screen.getByText(/Luke Skywalker/i);
-    await userEvent.click(link);
-    expect(screen.getByText(/Details Page/i)).toBeInTheDocument();
+  it('calls onPersonClick when a person item is clicked', () => {
+    const mockData = {
+      results: [
+        {
+          name: 'Luke Skywalker',
+          birth_year: '19BBY',
+          gender: 'male',
+          hair_color: 'blond',
+          eye_color: 'blue',
+          url: 'https://swapi.dev/api/people/1/',
+        },
+      ],
+    };
+
+    (useGetPersonQuery as jest.Mock).mockReturnValue({
+      data: mockData,
+      isSuccess: true,
+      isError: false,
+      isLoading: false,
+    });
+
+    render(
+      <Provider store={mockStore}>
+        <Result
+          searchQuery="Luke"
+          currentPage={1}
+          onPersonClick={onPersonClickMock}
+        />
+      </Provider>
+    );
+
+    const personItem = screen.getByText(mockData.results[0].name);
+    fireEvent.click(personItem);
+
+    expect(onPersonClickMock).toHaveBeenCalledWith('1');
+  });
+
+  it('toggles the checkbox when clicked', () => {
+    const mockData = {
+      results: [
+        {
+          name: 'Luke Skywalker',
+          birth_year: '19BBY',
+          gender: 'male',
+          hair_color: 'blond',
+          eye_color: 'blue',
+          url: 'https://swapi.dev/api/people/1/',
+        },
+      ],
+    };
+
+    (useGetPersonQuery as jest.Mock).mockReturnValue({
+      data: mockData,
+      isSuccess: true,
+      isError: false,
+      isLoading: false,
+    });
+
+    render(
+      <Provider store={mockStore}>
+        <Result
+          searchQuery="Luke"
+          currentPage={1}
+          onPersonClick={onPersonClickMock}
+        />
+      </Provider>
+    );
+
+    const checkbox = screen.getByRole('checkbox');
+    fireEvent.click(checkbox);
+
+    expect(checkbox).toBeChecked();
   });
 });
