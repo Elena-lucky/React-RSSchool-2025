@@ -1,5 +1,8 @@
+'use client';
+
 import { useState, useRef } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter, useSearchParams } from 'next/navigation';
+import Spinner from '../spinner/Spinner';
 import styles from './Search.module.css';
 
 type SearchProps = {
@@ -8,16 +11,22 @@ type SearchProps = {
 
 const Search = ({ searchQuery = '' }: SearchProps) => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const inputRef = useRef<HTMLInputElement>(null);
   const [inputValue, setInputValue] = useState(searchQuery);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSearch = () => {
     const trimmedQuery = inputValue.trim();
     if (trimmedQuery) {
-      router.push({
-        pathname: '/',
-        query: { query: trimmedQuery, page: 1 },
-      });
+      setIsLoading(true);
+      setTimeout(() => {
+        const params = new URLSearchParams(searchParams.toString());
+        params.set('query', trimmedQuery);
+        params.set('page', '1');
+        router.push(`/?${params.toString()}`);
+        setIsLoading(false);
+      }, 7000);
     }
   };
 
@@ -29,7 +38,10 @@ const Search = ({ searchQuery = '' }: SearchProps) => {
 
   const handleReset = () => {
     setInputValue('');
-    router.push({ pathname: '/', query: {} });
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete('query');
+    params.delete('page');
+    router.push(`/?${params.toString()}`);
   };
 
   return (
@@ -45,13 +57,14 @@ const Search = ({ searchQuery = '' }: SearchProps) => {
       <button
         className={styles.searchButton}
         onClick={handleSearch}
-        disabled={!inputValue.trim()}
+        disabled={!inputValue.trim() || isLoading}
       >
-        Search
+        {isLoading ? 'Searching...' : 'Search'}
       </button>
       <button className={styles.resetButton} onClick={handleReset}>
         Reset
       </button>
+      {isLoading && <Spinner />}
     </div>
   );
 };

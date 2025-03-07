@@ -1,53 +1,19 @@
-import { useEffect, useRef } from 'react';
-import { useGetPersonByIdQuery } from '../../services/Api/apiSlice';
+import { Person } from '../../utils/types';
 import Spinner from '../spinner/Spinner';
 import styles from './Details.module.css';
 
 interface DetailsProps {
-  personId: string;
-  onClose: () => void;
+  person: Person | null;
 }
 
-const Details = ({ personId, onClose }: DetailsProps) => {
-  const { data: person, isLoading, isError } = useGetPersonByIdQuery(personId);
-  const detailsRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    const handleOutsideClick = (event: MouseEvent) => {
-      if (
-        detailsRef.current &&
-        !detailsRef.current.contains(event.target as Node)
-      ) {
-        onClose();
-      }
-    };
-
-    document.addEventListener('mousedown', handleOutsideClick);
-    return () => document.removeEventListener('mousedown', handleOutsideClick);
-  }, [onClose]);
-
-  if (isLoading) {
-    return (
-      <div className={styles.results}>
-        <div className={styles.spinnerContainer}>
-          <Spinner />
-        </div>
-      </div>
-    );
+const Details = ({ person }: DetailsProps) => {
+  if (!person) {
+    return <Spinner />;
   }
-
-  if (isError) {
-    return <p>Oh sorry! There are some errors</p>;
-  }
-
-  if (!person) return <p>Person not found</p>;
 
   return (
-    <div className={styles.results} ref={detailsRef}>
+    <div className={styles.results}>
       <div className={styles.resultItem}>
-        <button className={styles.closeButton} onClick={onClose}>
-          ✖
-        </button>
         <h2 className={styles.itemName}>{person.name}</h2>
         <ul>
           <li className={styles.itemDetails}>

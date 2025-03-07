@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'; // Import Vitest utilities
-import MainPage from '../pages/index';
+import MainPage from '../app/page';
 import { useGetPersonQuery } from '../services/Api/apiSlice';
 import { apiSlice } from '../services/Api/apiSlice';
 import { ThemeProvider } from '../context/ThemeContext';

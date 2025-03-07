@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import ErrorPage from '../pages/500';
+import ErrorPage from '../app/500';
 import { vi } from 'vitest';
 
 vi.mock('next/link', () => {
