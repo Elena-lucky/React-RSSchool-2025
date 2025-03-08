@@ -6,7 +6,6 @@ import { ThemeProvider } from '../context/ThemeContext';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 
-// Mock the components
 vi.mock('../../components/search/Search', () => ({
   default: vi.fn(() => (
     <div>

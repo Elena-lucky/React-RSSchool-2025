@@ -6,7 +6,6 @@ describe('Details Component', () => {
   it('renders the Spinner when person is null', () => {
     render(<Details person={null} />);
 
-    // Check if the Spinner is rendered
     const spinner = screen.getByRole('progressbar');
     expect(spinner).toBeInTheDocument();
   });
@@ -29,10 +28,8 @@ describe('Details Component', () => {
 
     render(<Details person={mockPerson} />);
 
-    // Check if the person's name is rendered
     expect(screen.getByText(mockPerson.name)).toBeInTheDocument();
 
-    // Check if all person details are rendered
     expect(
       screen.getByText(`Birth Year: ${mockPerson.birth_year}`)
     ).toBeInTheDocument();

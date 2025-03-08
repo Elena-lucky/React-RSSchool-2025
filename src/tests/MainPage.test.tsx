@@ -92,7 +92,6 @@ describe('MainPage Component', () => {
       </ThemeProvider>
     );
 
-    // Check if MainPageActions is rendered
     expect(MainPageActions).toHaveBeenCalledWith(
       expect.objectContaining({
         searchQuery: mockProps.searchQuery,
@@ -101,7 +100,7 @@ describe('MainPage Component', () => {
         data: mockProps.data,
         personDetails: mockProps.personDetails,
       }),
-      expect.anything() // Ignore the second argument (React internal props)
+      expect.anything()
     );
   });
 });
