@@ -7,6 +7,9 @@ import './global.css';
 export const metadata: Metadata = {
   title: 'Star Wars API',
   description: 'Star Wars API is a trainee project for React course',
+  icons: {
+    icon: '/favicon.svg',
+  },
 };
 
 export default function RootLayout({
