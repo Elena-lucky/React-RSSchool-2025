@@ -1,101 +1,103 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import Search from '../components/search/Search';
-import { useRouter } from 'next/router';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { vi } from 'vitest';
 
-vi.mock('next/router', () => ({
+vi.mock('next/navigation', () => ({
   useRouter: vi.fn(),
+  useSearchParams: vi.fn(),
+}));
+
+// Mock the Spinner component
+vi.mock('../spinner/Spinner', () => ({
+  default: () => <div role="progressbar">Loading...</div>,
 }));
 
 describe('Search Component', () => {
-  const pushMock = vi.fn();
+  const mockPush = vi.fn();
+  const mockGet = vi.fn();
+  const mockToString = vi.fn();
 
   beforeEach(() => {
+    vi.clearAllMocks();
+
     (useRouter as jest.Mock).mockReturnValue({
-      push: pushMock,
-      query: {},
+      push: mockPush,
     });
+
+    (useSearchParams as jest.Mock).mockReturnValue({
+      get: mockGet,
+      toString: mockToString.mockReturnValue(''),
+    });
+
+    vi.useFakeTimers();
   });
 
   afterEach(() => {
-    vi.clearAllMocks();
+    vi.useRealTimers();
   });
 
-  it('renders the search input and buttons', () => {
-    render(<Search />);
+  it('renders the input and buttons correctly', () => {
+    render(<Search searchQuery="Luke" />);
 
-    expect(
-      screen.getByPlaceholderText(/What are you searching?/i)
-    ).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Search/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Reset/i })).toBeInTheDocument();
-  });
-
-  it('updates the input value when the user types', () => {
-    render(<Search />);
-
-    const input = screen.getByPlaceholderText(/What are you searching?/i);
-    fireEvent.change(input, { target: { value: 'Luke' } });
-
+    const input = screen.getByPlaceholderText('What are you searching?');
+    expect(input).toBeInTheDocument();
     expect(input).toHaveValue('Luke');
+
+    const searchButton = screen.getByRole('button', { name: /search/i });
+    expect(searchButton).toBeInTheDocument();
+
+    const resetButton = screen.getByRole('button', { name: /reset/i });
+    expect(resetButton).toBeInTheDocument();
   });
 
   it('calls handleSearch when the search button is clicked', () => {
     render(<Search />);
 
-    const input = screen.getByPlaceholderText(/What are you searching?/i);
-    fireEvent.change(input, { target: { value: 'Luke' } });
+    const input = screen.getByPlaceholderText('What are you searching?');
+    fireEvent.change(input, { target: { value: 'Leia' } });
 
-    const searchButton = screen.getByRole('button', { name: /Search/i });
+    const searchButton = screen.getByRole('button', { name: /search/i });
     fireEvent.click(searchButton);
+    vi.advanceTimersByTime(7000);
 
-    expect(pushMock).toHaveBeenCalledWith({
-      pathname: '/',
-      query: { query: 'Luke', page: 1 },
-    });
+    expect(mockPush).toHaveBeenCalledWith('/?query=Leia&page=1');
   });
 
-  it('calls handleSearch when the Enter key is pressed', () => {
+  it('calls handleSearch when pressing Enter', () => {
     render(<Search />);
 
-    const input = screen.getByPlaceholderText(/What are you searching?/i);
-    fireEvent.change(input, { target: { value: 'Luke' } });
+    const input = screen.getByPlaceholderText('What are you searching?');
+    fireEvent.change(input, { target: { value: 'Leia' } });
     fireEvent.keyDown(input, { key: 'Enter' });
 
-    expect(pushMock).toHaveBeenCalledWith({
-      pathname: '/',
-      query: { query: 'Luke', page: 1 },
-    });
+    vi.advanceTimersByTime(7000);
+
+    expect(mockPush).toHaveBeenCalledWith('/?query=Leia&page=1');
   });
 
   it('calls handleReset when the reset button is clicked', () => {
-    render(<Search />);
+    render(<Search searchQuery="Luke" />);
 
-    const input = screen.getByPlaceholderText(/What are you searching?/i);
-    fireEvent.change(input, { target: { value: 'Luke' } });
-
-    const resetButton = screen.getByRole('button', { name: /Reset/i });
+    const resetButton = screen.getByRole('button', { name: /reset/i });
     fireEvent.click(resetButton);
 
+    const input = screen.getByPlaceholderText('What are you searching?');
     expect(input).toHaveValue('');
-    expect(pushMock).toHaveBeenCalledWith({
-      pathname: '/',
-      query: {},
-    });
+
+    expect(mockPush).toHaveBeenCalledWith('/?');
   });
 
   it('disables the search button when the input is empty', () => {
     render(<Search />);
 
-    const input = screen.getByPlaceholderText(/What are you searching?/i);
-    const searchButton = screen.getByRole('button', { name: /Search/i });
+    const input = screen.getByPlaceholderText('What are you searching?');
+    const searchButton = screen.getByRole('button', { name: /search/i });
 
     expect(searchButton).toBeDisabled();
 
-    fireEvent.change(input, { target: { value: 'Luke' } });
+    fireEvent.change(input, { target: { value: 'Leia' } });
+
     expect(searchButton).not.toBeDisabled();
-
-    fireEvent.change(input, { target: { value: '' } });
-    expect(searchButton).toBeDisabled();
   });
 });

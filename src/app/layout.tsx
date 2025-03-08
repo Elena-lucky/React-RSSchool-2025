@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import StoreProvider from '../store/storeProvider';
 import { ThemeProvider } from '../context/ThemeContext';
+import ErrorBoundary from '../components/error boundary/ErrorBoundary';
 import './global.css';
 
 export const metadata: Metadata = {
@@ -16,9 +17,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <StoreProvider>
-          <ThemeProvider>{children}</ThemeProvider>
-        </StoreProvider>
+        <ErrorBoundary>
+          <StoreProvider>
+            <ThemeProvider>{children}</ThemeProvider>
+          </StoreProvider>
+        </ErrorBoundary>
       </body>
     </html>
   );

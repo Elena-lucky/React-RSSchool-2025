@@ -1,42 +1,32 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import NotFoundPage from '../app/404';
-import { useRouter } from 'next/router';
+import { render, screen } from '@testing-library/react';
+import NotFoundPage from '../app/not-found';
 import { vi } from 'vitest';
 
-vi.mock('next/router', () => ({
-  useRouter: vi.fn(),
-}));
+vi.mock('next/link', () => {
+  return {
+    default: ({
+      children,
+      href,
+    }: {
+      children: React.ReactNode;
+      href: string;
+    }) => <a href={href}>{children}</a>,
+  };
+});
 
 describe('NotFoundPage Component', () => {
-  const pushMock = vi.fn();
-
-  beforeEach(() => {
-    (useRouter as jest.Mock).mockReturnValue({
-      push: pushMock,
-    });
-  });
-
-  afterEach(() => {
-    vi.clearAllMocks();
-  });
-
-  it('renders the 404 message and button', () => {
+  it('renders the "Not Found" message', () => {
     render(<NotFoundPage />);
 
-    expect(
-      screen.getByText(/Oops! This page was not found./i)
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', { name: /Back to Main Page/i })
-    ).toBeInTheDocument();
+    const message = screen.getByText('Oops! This page was not found.');
+    expect(message).toBeInTheDocument();
   });
 
-  it('navigates to the home page when the button is clicked', () => {
+  it('renders the "Back to Main page" link', () => {
     render(<NotFoundPage />);
 
-    const button = screen.getByRole('button', { name: /Back to Main Page/i });
-    fireEvent.click(button);
-
-    expect(pushMock).toHaveBeenCalledWith('/');
+    const link = screen.getByRole('link', { name: /back to main page/i });
+    expect(link).toBeInTheDocument();
+    expect(link).toHaveAttribute('href', '/');
   });
 });

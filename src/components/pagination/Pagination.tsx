@@ -35,7 +35,11 @@ function Pagination({
   };
 
   return (
-    <div className={styles.pagination} aria-label="navigation">
+    <div
+      className={styles.pagination}
+      aria-label="navigation"
+      data-testid="pagination"
+    >
       {isLoading && <Spinner />}
       <button
         disabled={!hasPrevious || isLoading}

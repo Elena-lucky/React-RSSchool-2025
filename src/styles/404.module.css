@@ -1,6 +1,10 @@
 .notFoundWrapper {
-  margin: 20px;
+  margin: 0 auto;
   display: flex;
   justify-content: space-between;
   gap: 20px;
+}
+
+.notFoundMessage {
+  font-size: 2rem;
 }

@@ -4,7 +4,7 @@ import styles from './Result.module.css';
 
 const Result = ({ data, onPersonClick }: ResultProps) => {
   return (
-    <div className={styles.results}>
+    <div className={styles.results} data-testid="result-component">
       {data.results.map((person: Person) => {
         const personId = person.url.match(/\/(\d+)\/$/)?.[1] || '';
         return (
