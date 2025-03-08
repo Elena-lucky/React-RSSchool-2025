@@ -1,15 +1,15 @@
 import { useCallback } from 'react';
 import { Outlet, useSearchParams, useLocation } from 'react-router-dom';
-import useSearchQuery from '../../hooks/useSearchQuery';
-import Search from '../../components/search/Search';
-import Result from '../../components/result/Result';
-import Spinner from '../../components/spinner/Spinner';
-import Pagination from '../../components/pagination/Pagination';
-import Flyout from '../../components/flyout/Flyout';
-import { useGetPersonQuery } from '../../services/Api/apiSlice';
-import { useTheme } from '../../context/ThemeContext';
-import ThemeToggle from '../../components/themeToggle/ThemeToggle';
-import styles from './MainPage.module.css';
+import useSearchQuery from './hooks/useSearchQuery';
+import Search from './components/search/Search';
+import Result from './components/result/Result';
+import Spinner from './components/spinner/Spinner';
+import Pagination from './components/pagination/Pagination';
+import Flyout from './components/flyout/Flyout';
+import { useGetPersonQuery } from './services/Api/apiSlice';
+import { useTheme } from './context/ThemeContext';
+import ThemeToggle from './components/themeToggle/ThemeToggle';
+import styles from './pages/MainPage/MainPage.module.css';
 
 const MainPage = () => {
   const [query, setQuery] = useSearchQuery();
@@ -91,7 +91,6 @@ const MainPage = () => {
           onPageChange={handlePageChange}
         />
       )}
-      {}
       <Flyout />
     </div>
   );

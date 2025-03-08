@@ -2,7 +2,9 @@ import { useState, useEffect } from 'react';
 
 const useSearchQuery = (): [string, (query: string) => void, () => void] => {
   const [query, setQuery] = useState(
-    () => localStorage.getItem('searchQuery') || ''
+    typeof window !== 'undefined'
+      ? localStorage.getItem('searchQuery') || ''
+      : ''
   );
 
   useEffect(() => {

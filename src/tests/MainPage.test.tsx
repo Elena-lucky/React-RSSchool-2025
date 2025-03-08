@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import MainPage from '../pages/MainPage/MainPage';
+import MainPage from '../routes/home';
 import { useGetPersonQuery } from '../services/Api/apiSlice';
 import { ThemeProvider } from '../context/ThemeContext';
 import { Provider } from 'react-redux';

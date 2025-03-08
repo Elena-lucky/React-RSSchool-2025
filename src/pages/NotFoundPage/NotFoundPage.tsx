@@ -1,17 +1,10 @@
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const NotFoundPage = () => {
-  const navigate = useNavigate();
   return (
     <div>
       <p>Oops! This page was not found.</p>
-      <button
-        onClick={() => {
-          navigate('/');
-        }}
-      >
-        Back to Main Page
-      </button>
+      <Link to="/">Back to Main Page</Link>
     </div>
   );
 };
