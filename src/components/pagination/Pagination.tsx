@@ -1,31 +1,57 @@
+'use client';
+
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import Spinner from '../spinner/Spinner';
 import styles from './Pagination.module.css';
 
 interface PaginationProps {
   currentPage: number;
   hasPrevious: boolean;
   hasNext: boolean;
-  onPageChange: (newPage: number) => void;
+  searchQuery?: string;
 }
 
 function Pagination({
   currentPage,
   hasPrevious,
   hasNext,
-  onPageChange,
+  searchQuery = '',
 }: PaginationProps) {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handlePageChange = (newPage: number) => {
+    setIsLoading(true);
+
+    setTimeout(() => {
+      const queryParams = new URLSearchParams({
+        page: newPage.toString(),
+        query: searchQuery,
+      });
+      router.push(`/?${queryParams.toString()}`);
+      setIsLoading(false);
+    }, 7000);
+  };
+
   return (
-    <div className={styles.pagination} aria-label="navigation">
+    <div
+      className={styles.pagination}
+      aria-label="navigation"
+      data-testid="pagination"
+    >
+      {isLoading && <Spinner />}
       <button
-        disabled={!hasPrevious}
-        onClick={() => onPageChange(currentPage - 1)}
+        disabled={!hasPrevious || isLoading}
+        onClick={() => handlePageChange(currentPage - 1)}
       >
         Previous
       </button>
       <span>Page {currentPage}</span>
       <button
-        disabled={!hasNext}
+        disabled={!hasNext || isLoading}
         aria-label="Next"
-        onClick={() => onPageChange(currentPage + 1)}
+        onClick={() => handlePageChange(currentPage + 1)}
       >
         Next
       </button>

@@ -1,3 +1,5 @@
+'use client';
+
 import clsx from 'clsx';
 import { useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -61,7 +63,7 @@ const Flyout = () => {
   if (selectedItems.length === 0) return null;
 
   return (
-    <div className={styles.outer}>
+    <div aria-label="Flyout" className={styles.outer}>
       <div className={styles.dot}></div>
       <div className={styles.card}>
         <div className={styles.ray}></div>

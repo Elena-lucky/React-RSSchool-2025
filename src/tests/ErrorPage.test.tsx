@@ -1,37 +1,41 @@
 import { render, screen } from '@testing-library/react';
-import ErrorPage from '../pages/500';
+import ErrorPage from '../app/error';
 import { vi } from 'vitest';
 
 vi.mock('next/link', () => {
-  const MockLink = ({
-    children,
-    href,
-  }: {
-    children: React.ReactNode;
-    href: string;
-  }) => <a href={href}>{children}</a>;
-  return { default: MockLink };
+  return {
+    default: ({
+      children,
+      href,
+    }: {
+      children: React.ReactNode;
+      href: string;
+    }) => <a href={href}>{children}</a>,
+  };
 });
 
 describe('ErrorPage Component', () => {
-  it('renders the 500 error message and link', () => {
+  it('renders the error message', () => {
     render(<ErrorPage />);
 
-    expect(
-      screen.getByRole('heading', { name: /500 - Server-side error occurred/i })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(/Sorry, something went wrong. Please try again later./i)
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('link', { name: /Go back home/i })
-    ).toBeInTheDocument();
+    const errorMessage = screen.getByText('500 - Server-side error occurred');
+    expect(errorMessage).toBeInTheDocument();
   });
 
-  it('navigates to the home page when the link is clicked', () => {
+  it('renders the description', () => {
     render(<ErrorPage />);
 
-    const link = screen.getByRole('link', { name: /Go back home/i });
+    const description = screen.getByText(
+      'Sorry, something went wrong. Please try again later.'
+    );
+    expect(description).toBeInTheDocument();
+  });
+
+  it('renders the "Go back home" link', () => {
+    render(<ErrorPage />);
+
+    const link = screen.getByRole('link', { name: /go back home/i });
+    expect(link).toBeInTheDocument();
     expect(link).toHaveAttribute('href', '/');
   });
 });
