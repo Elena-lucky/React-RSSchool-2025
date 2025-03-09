@@ -1,63 +1,19 @@
-import { useEffect, useCallback, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useGetPersonByIdQuery } from '../../services/Api/apiSlice';
+import { Person } from '../../utils/types';
 import Spinner from '../../components/spinner/Spinner';
 import styles from './DetailsPage.module.css';
 
-const DetailsPage = () => {
-  const { id } = useParams<{ id: string }>();
-  const detailsRef = useRef<HTMLDivElement | null>(null);
-  const navigate = useNavigate();
+interface DetailsProps {
+  person: Person | null;
+}
 
-  const {
-    data: person,
-    isLoading,
-    isError,
-    error,
-  } = useGetPersonByIdQuery(id || '', {
-    skip: !id,
-  });
-
-  const handleClose = useCallback(() => {
-    navigate(-1);
-  }, [navigate]);
-
-  useEffect(() => {
-    const handleOutsideClick = (event: MouseEvent) => {
-      if (
-        detailsRef.current &&
-        !detailsRef.current.contains(event.target as Node)
-      ) {
-        handleClose();
-      }
-    };
-
-    document.addEventListener('mousedown', handleOutsideClick);
-    return () => document.removeEventListener('mousedown', handleOutsideClick);
-  }, [handleClose]);
-
-  if (isLoading) {
-    return (
-      <div className={styles.results}>
-        <div className={styles.spinnerContainer}>
-          <Spinner />
-        </div>
-      </div>
-    );
+const Details = ({ person }: DetailsProps) => {
+  if (!person) {
+    return <Spinner />;
   }
-
-  if (isError) {
-    return <p>Error: {error.toString()}</p>;
-  }
-
-  if (!person) return <p>Person not found</p>;
 
   return (
-    <div className={styles.results} ref={detailsRef}>
+    <div className={styles.results}>
       <div className={styles.resultItem}>
-        <button className={styles.closeButton} onClick={handleClose}>
-          ✖
-        </button>
         <h2 className={styles.itemName}>{person.name}</h2>
         <ul>
           <li className={styles.itemDetails}>
@@ -83,4 +39,4 @@ const DetailsPage = () => {
   );
 };
 
-export default DetailsPage;
+export default Details;

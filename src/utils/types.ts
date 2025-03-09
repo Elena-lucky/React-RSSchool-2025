@@ -19,3 +19,22 @@ export interface ApiResponse {
   next: string | null;
   previous: string | null;
 }
+
+export enum SearchParams {
+  name = 'search',
+  page = 'page',
+  details = 'details',
+}
+
+export interface MainPageProps {
+  searchQuery: string;
+  currentPage: number;
+  details: string | null;
+  data: ApiResponse;
+  personDetails: Person | null;
+}
+export interface ResultProps {
+  searchQuery: string;
+  currentPage: number;
+  data: ApiResponse;
+}

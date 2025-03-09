@@ -7,6 +7,7 @@
     "dev": "react-router dev",
     "start": "vite",
     "build": "tsc -b && vite build",
+    "typecheck": "react-router typegen && tsc",
     "lint": "eslint .",
     "lint:fix": "eslint src/ --fix",
     "preview": "vite build && vite preview",
