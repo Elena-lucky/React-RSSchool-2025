@@ -4,8 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "dev": "react-router dev",
     "start": "vite",
     "build": "tsc -b && vite build",
+    "typecheck": "react-router typegen && tsc",
     "lint": "eslint .",
     "lint:fix": "eslint src/ --fix",
     "preview": "vite build && vite preview",
@@ -20,16 +22,19 @@
     "deploy": "npm run build && npx gh-pages -d dist -e class-components"
   },
   "dependencies": {
+    "@react-router/node": "^7.3.0",
     "@reduxjs/toolkit": "^2.5.1",
     "clsx": "^2.1.1",
+    "isbot": "^5",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-redux": "^9.2.0",
-    "react-router": "^7.1.5",
-    "react-router-dom": "^7.1.5"
+    "react-router": "^7.3.0",
+    "react-router-dom": "^7.3.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
+    "@react-router/dev": "^7.3.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",
     "@testing-library/user-event": "^14.6.1",
