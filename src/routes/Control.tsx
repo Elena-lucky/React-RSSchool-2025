@@ -1,116 +1,78 @@
-import { useState } from 'react';
-import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { formSchema } from '../validation/validationSchema';
 import { InputComponent } from '../components/formComponents/InputComponent';
 import '../styles/Forms.css';
 
 export function ControlledForm() {
-  const [name, setName] = useState('');
-  const [age, setAge] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [gender, setGender] = useState('');
-  const [terms, setTerms] = useState(false);
-  const [img, setImg] = useState<File | null>(null);
-  const [country, setCountry] = useState('');
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(formSchema),
+  });
 
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    const formData = {
-      name,
-      age: parseInt(age, 10),
-      email,
-      password,
-      confirmPassword,
-      gender,
-      terms,
-      img,
-      country,
-    };
-
-    try {
-      formSchema.parse(formData);
-      setErrors({});
-      console.log('Form data is valid:', formData);
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        const errorMessages: { [key: string]: string } = {};
-        error.errors.forEach((err) => {
-          if (err.path) {
-            errorMessages[err.path[0]] = err.message;
-          }
-        });
-        setErrors(errorMessages);
-      }
-    }
+  const onSubmit = (data) => {
+    console.log('Form data is valid:', data);
   };
 
   return (
     <div className="form-wrapper">
       <p className="title">Controlled form</p>
       <p className="message">Please fill in these fields.</p>
-      <form className="form" onSubmit={handleSubmit}>
+      <form className="form" onSubmit={handleSubmit(onSubmit)}>
         <div className="flex">
           <InputComponent
             id="name"
             label="Name"
             type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            {...register('name')}
             placeholder=""
-            required
           />
-          {errors.name && <span className="error">{errors.name}</span>}
+          {errors.name && <span className="error">{errors.name.message}</span>}
 
           <InputComponent
             id="age"
             label="Age"
             type="number"
-            value={age}
-            onChange={(e) => setAge(e.target.value)}
+            {...register('age', { valueAsNumber: true })}
             placeholder=""
             min={1}
-            required
           />
-          {errors.age && <span className="error">{errors.age}</span>}
+          {errors.age && <span className="error">{errors.age.message}</span>}
 
           <InputComponent
             id="email"
             label="Email"
             type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            {...register('email')}
             placeholder=""
-            required
           />
-          {errors.email && <span className="error">{errors.email}</span>}
+          {errors.email && (
+            <span className="error">{errors.email.message}</span>
+          )}
 
           <InputComponent
             id="password"
             label="Password"
             type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            {...register('password')}
             placeholder=""
-            required
           />
-          {errors.password && <span className="error">{errors.password}</span>}
+          {errors.password && (
+            <span className="error">{errors.password.message}</span>
+          )}
 
           <InputComponent
             id="confirmPassword"
             label="Confirm password"
             type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            {...register('confirmPassword')}
             placeholder=""
-            required
           />
           {errors.confirmPassword && (
-            <span className="error">{errors.confirmPassword}</span>
+            <span className="error">{errors.confirmPassword.message}</span>
           )}
 
           <label>
@@ -118,11 +80,8 @@ export function ControlledForm() {
               <input
                 type="radio"
                 id="male"
-                name="gender"
                 value="male"
-                checked={gender === 'male'}
-                onChange={(e) => setGender(e.target.value)}
-                required
+                {...register('gender')}
               />{' '}
               Men
             </label>
@@ -130,52 +89,44 @@ export function ControlledForm() {
               <input
                 type="radio"
                 id="female"
-                name="gender"
                 value="female"
-                checked={gender === 'female'}
-                onChange={(e) => setGender(e.target.value)}
-                required
+                {...register('gender')}
               />{' '}
               Women
             </label>
           </label>
-          {errors.gender && <span className="error">{errors.gender}</span>}
+          {errors.gender && (
+            <span className="error">{errors.gender.message}</span>
+          )}
 
           <label htmlFor="terms">
-            <input
-              type="checkbox"
-              id="terms"
-              checked={terms}
-              onChange={(e) => setTerms(e.target.checked)}
-              required
-            />{' '}
-            I accept Terms and Conditions agreement.
+            <input type="checkbox" id="terms" {...register('terms')} /> I accept
+            Terms and Conditions agreement.
           </label>
-          {errors.terms && <span className="error">{errors.terms}</span>}
+          {errors.terms && (
+            <span className="error">{errors.terms.message}</span>
+          )}
 
           <label htmlFor="img">Download your foto</label>
           <input
             type="file"
             id="picture"
-            onChange={(e) => setImg(e.target.files?.[0] || null)}
+            {...register('img')}
             accept="image/jpeg, image/png"
           />
-          {errors.img && <span className="error">{errors.img}</span>}
+          {errors.img && <span className="error">{errors.img.message}</span>}
 
           <label htmlFor="country">
-            <select
-              className="input"
-              id="country"
-              value={country}
-              onChange={(e) => setCountry(e.target.value)}
-              required
-            >
+            <select className="input" id="country" {...register('country')}>
               <option value="">Select the country</option>
               <option value="Belarus">Belarus</option>
               <option value="Ukraine">Ukraine</option>
               <option value="Italy">Italy</option>
             </select>
           </label>
+          {errors.country && (
+            <span className="error">{errors.country.message}</span>
+          )}
 
           <button
             className="submit"
