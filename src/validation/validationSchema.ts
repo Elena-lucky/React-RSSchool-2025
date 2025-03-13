@@ -51,6 +51,7 @@ export const formSchema = z
     gender: genderSchema,
     terms: termsSchema,
     img: imgSchema,
+    country: z.string(),
   })
   .superRefine((data, ctx) => {
     if (data.password !== data.confirmPassword) {

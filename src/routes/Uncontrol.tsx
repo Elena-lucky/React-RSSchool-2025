@@ -72,7 +72,7 @@ export function UncontrolledForm() {
             type="number"
             ref={ageRef}
             placeholder=""
-            min={1}
+            min={0}
             required
           />
           {errors.age && <span className="error">{errors.age}</span>}

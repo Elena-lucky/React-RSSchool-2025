@@ -1,7 +1,8 @@
-import { useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { formSchema } from '../validation/validationSchema';
 import { InputComponent } from '../components/formComponents/InputComponent';
+import { FormData } from '../utils/types';
 import '../styles/Forms.css';
 
 export function ControlledForm() {
@@ -13,7 +14,7 @@ export function ControlledForm() {
     resolver: zodResolver(formSchema),
   });
 
-  const onSubmit = (data) => {
+  const onSubmit: SubmitHandler<FormData> = (data) => {
     console.log('Form data is valid:', data);
   };
 
@@ -38,7 +39,7 @@ export function ControlledForm() {
             type="number"
             {...register('age', { valueAsNumber: true })}
             placeholder=""
-            min={1}
+            min={0}
           />
           {errors.age && <span className="error">{errors.age.message}</span>}
 
