@@ -2,6 +2,10 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { formSchema } from '../validation/validationSchema';
 import { InputComponent } from '../components/formComponents/InputComponent';
+import { useNavigate } from 'react-router';
+import { useDispatch } from 'react-redux';
+import { submitForm } from '../store/formSlice';
+import { countries } from '../store/countriesStore';
 import { FormData } from '../utils/types';
 import '../styles/Forms.css';
 
@@ -9,19 +13,25 @@ export function ControlledForm() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    setValue,
+    formState: { errors, isValid },
   } = useForm({
     resolver: zodResolver(formSchema),
+    mode: 'onChange',
   });
 
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const onSubmit: SubmitHandler<FormData> = (data) => {
-    console.log('Form data is valid:', data);
+    dispatch(submitForm(data));
+    navigate('/');
   };
 
   return (
     <div className="form-wrapper">
       <p className="title">Controlled form</p>
-      <p className="message">Please fill in these fields.</p>
+      <p className="message">All fields are required.</p>
       <form className="form" onSubmit={handleSubmit(onSubmit)}>
         <div className="flex">
           <InputComponent
@@ -71,6 +81,7 @@ export function ControlledForm() {
             type="password"
             {...register('confirmPassword')}
             placeholder=""
+            required
           />
           {errors.confirmPassword && (
             <span className="error">{errors.confirmPassword.message}</span>
@@ -82,6 +93,7 @@ export function ControlledForm() {
                 type="radio"
                 id="male"
                 value="male"
+                required
                 {...register('gender')}
               />{' '}
               Men
@@ -91,6 +103,7 @@ export function ControlledForm() {
                 type="radio"
                 id="female"
                 value="female"
+                required
                 {...register('gender')}
               />{' '}
               Women
@@ -101,8 +114,8 @@ export function ControlledForm() {
           )}
 
           <label htmlFor="terms">
-            <input type="checkbox" id="terms" {...register('terms')} /> I accept
-            Terms and Conditions agreement.
+            <input type="checkbox" id="terms" required {...register('terms')} />{' '}
+            I accept Terms and Conditions agreement.
           </label>
           {errors.terms && (
             <span className="error">{errors.terms.message}</span>
@@ -111,29 +124,37 @@ export function ControlledForm() {
           <label htmlFor="img">Download your foto</label>
           <input
             type="file"
-            id="picture"
-            {...register('img')}
+            id="img"
+            required
             accept="image/jpeg, image/png"
+            onChange={(event) => {
+              const file = event.target.files?.[0];
+              if (file) {
+                setValue('img', file, { shouldValidate: true });
+              }
+            }}
           />
           {errors.img && <span className="error">{errors.img.message}</span>}
 
           <label htmlFor="country">
-            <select className="input" id="country" {...register('country')}>
-              <option value="">Select the country</option>
-              <option value="Belarus">Belarus</option>
-              <option value="Ukraine">Ukraine</option>
-              <option value="Italy">Italy</option>
-            </select>
+            <input
+              className="input"
+              list="countries"
+              id="country"
+              {...register('country')}
+              placeholder="Select or type a country"
+            />
+            <datalist id="countries">
+              {countries.map((country) => (
+                <option key={country} value={country} />
+              ))}
+            </datalist>
           </label>
           {errors.country && (
             <span className="error">{errors.country.message}</span>
           )}
 
-          <button
-            className="submit"
-            type="submit"
-            disabled={Object.keys(errors).length > 0}
-          >
+          <button className="submit" type="submit" disabled={!isValid}>
             Submit
           </button>
         </div>

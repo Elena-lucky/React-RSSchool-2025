@@ -13,7 +13,10 @@ const emailSchema = z.string().email({ message: 'Invalid email address' });
 
 const passwordSchema = z
   .string()
-  .min(8, { message: 'Password must be at least 8 characters' })
+  .min(8, {
+    message:
+      'Password must be at least 8 characters. Password must contain at least 1 number, 1 uppercase letter, 1 lowercase letter, and 1 special character',
+  })
   .refine(
     (value) =>
       /[0-9]/.test(value) &&

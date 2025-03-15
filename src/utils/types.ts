@@ -9,3 +9,7 @@ export interface FormData {
   img: File | null;
   country: string;
 }
+
+export interface FormState {
+  submittedData: FormData[];
+}

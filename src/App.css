@@ -5,8 +5,15 @@
   text-align: center;
 }
 
+.main-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+}
+
 .greeting {
-  font-size: 2rem;
+  margin-top: 0;
+  font-size: 1.5rem;
   color: #00bfff;
 }
 
@@ -40,4 +47,33 @@
   background-repeat: no-repeat;
   background-position: right center;
   background-size: 24px 24px;
+}
+
+.form-submitted {
+  display: flex;
+  gap: 10px;
+}
+
+.form-item {
+  max-width: 200px;
+  margin-top: 50px;
+  padding: 10px;
+  border: 1px #00bfff solid;
+  border-radius: 8px;
+  background-color: rgb(54, 53, 53);
+  color: aliceblue;
+}
+
+.last-item {
+  border: 2px #f76ca1 solid;
+}
+
+.form-item p {
+  margin: 0;
+}
+
+.img-submitted img {
+  width: 100%;
+  border: 1px aliceblue solid;
+  border-radius: 8px;
 }
