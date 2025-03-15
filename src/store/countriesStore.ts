@@ -1,15 +1,3 @@
-import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { setCountries } from '../store/countriesSlice';
-
-export const useLoadCountries = () => {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(setCountries(countries));
-  }, [dispatch]);
-};
-
 export const countries = [
   'Afghanistan',
   'Albania',

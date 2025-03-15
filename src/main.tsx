@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router';
 import { Provider } from 'react-redux';
 import { store } from '../src/store/store';
+import ErrorBoundary from './components/errorBoundary/ErrorBoundary.tsx';
 import { UncontrolledForm } from './routes/Uncontrol.tsx';
 import { ControlledForm } from './routes/Control.tsx';
 import './index.css';
@@ -13,15 +14,17 @@ const rootElement = document.getElementById('root');
 if (rootElement) {
   createRoot(rootElement).render(
     <StrictMode>
-      <Provider store={store}>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<App />} />
-            <Route path="uncontrol" element={<UncontrolledForm />} />
-            <Route path="control" element={<ControlledForm />} />
-          </Routes>
-        </BrowserRouter>
-      </Provider>
+      <ErrorBoundary>
+        <Provider store={store}>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<App />} />
+              <Route path="uncontrol" element={<UncontrolledForm />} />
+              <Route path="control" element={<ControlledForm />} />
+            </Routes>
+          </BrowserRouter>
+        </Provider>
+      </ErrorBoundary>
     </StrictMode>
   );
 } else {
