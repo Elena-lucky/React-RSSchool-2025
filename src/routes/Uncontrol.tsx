@@ -2,7 +2,6 @@ import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { z } from 'zod';
 import { formSchema } from '../validation/validationSchema';
-import { FormData } from '../utils/types';
 import { InputComponent } from '../components/formComponents/InputComponent';
 import { useDispatch } from 'react-redux';
 import { submitForm } from '../store/formSlice';
@@ -26,21 +25,23 @@ export function UncontrolledForm() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const getFormValues = () => ({
+    name: nameRef.current?.value || '',
+    age: parseInt(ageRef.current?.value || '0', 10),
+    email: emailRef.current?.value || '',
+    password: passwordRef.current?.value || '',
+    confirmPassword: confirmPasswordRef.current?.value || '',
+    gender: genderRef.current?.value || '',
+    terms: termsRef.current?.checked || false,
+    img: imgRef.current?.files?.[0] ?? null,
+    country: countryRef.current?.value || '',
+  });
+
   const validateForm = () => {
-    const formData: FormData = {
-      name: nameRef.current?.value || '',
-      age: parseInt(ageRef.current?.value || '0', 10),
-      email: emailRef.current?.value || '',
-      password: passwordRef.current?.value || '',
-      confirmPassword: confirmPasswordRef.current?.value || '',
-      gender: genderRef.current?.value || '',
-      terms: termsRef.current?.checked || false,
-      img: imgRef.current?.files?.[0] ?? null,
-      country: countryRef.current?.value || '',
-    };
+    const formValues = getFormValues();
 
     try {
-      formSchema.parse(formData);
+      formSchema.parse(formValues);
       setErrors({});
       return true;
     } catch (error) {
@@ -61,22 +62,9 @@ export function UncontrolledForm() {
     event.preventDefault();
     setIsSubmitted(true);
 
-    const isFormValid = validateForm();
-
-    if (isFormValid) {
-      const formData: FormData = {
-        name: nameRef.current?.value || '',
-        age: parseInt(ageRef.current?.value || '0', 10),
-        email: emailRef.current?.value || '',
-        password: passwordRef.current?.value || '',
-        confirmPassword: confirmPasswordRef.current?.value || '',
-        gender: genderRef.current?.value || '',
-        terms: termsRef.current?.checked || false,
-        img: imgRef.current?.files?.[0] ?? null,
-        country: countryRef.current?.value || '',
-      };
-
-      dispatch(submitForm(formData));
+    if (validateForm()) {
+      const formValues = getFormValues();
+      dispatch(submitForm(formValues));
       navigate('/');
     }
   };

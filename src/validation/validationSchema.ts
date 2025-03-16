@@ -17,17 +17,18 @@ const passwordSchema = z
     message:
       'Password must be at least 8 characters. Password must contain at least 1 number, 1 uppercase letter, 1 lowercase letter, and 1 special character',
   })
-  .refine(
-    (value) =>
-      /[0-9]/.test(value) &&
-      /[A-Z]/.test(value) &&
-      /[a-z]/.test(value) &&
-      /[^A-Za-z0-9]/.test(value),
-    {
-      message:
-        'Password must contain at least 1 number, 1 uppercase letter, 1 lowercase letter, and 1 special character',
-    }
-  );
+  .refine((value) => /[0-9]/.test(value), {
+    message: 'Password must contain at least 1 number.',
+  })
+  .refine((value) => /[A-Z]/.test(value), {
+    message: 'Password must contain at least 1 uppercase letter.',
+  })
+  .refine((value) => /[a-z]/.test(value), {
+    message: 'Password must contain at least 1 lowercase letter.',
+  })
+  .refine((value) => /[^A-Za-z0-9]/.test(value), {
+    message: 'Password must contain at least 1 special character.',
+  });
 
 const genderSchema = z.string().min(1, { message: 'Gender is required' });
 
@@ -36,7 +37,7 @@ const termsSchema = z
   .refine((value) => value, { message: 'You must accept the terms' });
 
 const imgSchema = z
-  .instanceof(File)
+  .instanceof(File, { message: 'This field is required' })
   .refine((file) => file.size <= 5 * 1024 * 1024, {
     message: 'File size must be less than 5MB',
   })
@@ -54,7 +55,7 @@ export const formSchema = z
     gender: genderSchema,
     terms: termsSchema,
     img: imgSchema,
-    country: z.string(),
+    country: z.string().min(1, { message: 'This field is required' }),
   })
   .superRefine((data, ctx) => {
     if (data.password !== data.confirmPassword) {

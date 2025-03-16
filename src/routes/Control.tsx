@@ -14,6 +14,7 @@ export function ControlledForm() {
     register,
     handleSubmit,
     setValue,
+    trigger,
     formState: { errors, isValid },
   } = useForm({
     resolver: zodResolver(formSchema),
@@ -131,6 +132,7 @@ export function ControlledForm() {
               const file = event.target.files?.[0];
               if (file) {
                 setValue('img', file, { shouldValidate: true });
+                trigger('img');
               }
             }}
           />
@@ -154,7 +156,14 @@ export function ControlledForm() {
             <span className="error">{errors.country.message}</span>
           )}
 
-          <button className="submit" type="submit" disabled={!isValid}>
+          <button
+            className="submit"
+            type="submit"
+            disabled={!isValid}
+            onClick={() => {
+              trigger(['img', 'country']);
+            }}
+          >
             Submit
           </button>
         </div>
