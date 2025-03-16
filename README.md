@@ -1,1 +1,1 @@
-# React-RSSchool-2025
+Trainee project for RS School
