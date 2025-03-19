@@ -86,7 +86,7 @@ export const CountryList = () => {
         <SortComponent
           sortBy={sortBy}
           sortOrder={sortOrder}
-          onSortChange={(by, order) => {
+          onSortChange={(by: 'population' | 'name', order: 'asc' | 'desc') => {
             setSortBy(by);
             setSortOrder(order);
           }}

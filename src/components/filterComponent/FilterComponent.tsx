@@ -1,4 +1,4 @@
-import { FilterProps } from 'src/utils/types';
+import { FilterProps } from '../../utils/types';
 
 export const FilterComponent = ({
   selectedRegion,
