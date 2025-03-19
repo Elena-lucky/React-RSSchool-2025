@@ -1,0 +1,29 @@
+import { FilterProps } from 'src/utils/types';
+
+export const FilterComponent = ({
+  selectedRegion,
+  onRegionChange,
+}: FilterProps) => {
+  const regions = [
+    'All regions',
+    'Africa',
+    'Americas',
+    'Asia',
+    'Europe',
+    'Oceania',
+  ];
+
+  return (
+    <select
+      value={selectedRegion}
+      onChange={(e) => onRegionChange(e.target.value)}
+      aria-label="Filter by region"
+    >
+      {regions.map((region) => (
+        <option key={region} value={region}>
+          {region}
+        </option>
+      ))}
+    </select>
+  );
+};
