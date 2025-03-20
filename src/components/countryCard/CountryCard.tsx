@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { CountryCardProps } from '../../utils/types';
+import { CountryCardProps } from '../../types/types';
 import { VisitedCountry } from '../visitedCountries/VisitedCountries';
 import styles from './CountryCard.module.css';
 

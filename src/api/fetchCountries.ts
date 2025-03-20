@@ -1,4 +1,4 @@
-import { CountryType } from '../utils/types';
+import { CountryType } from '../types/types';
 
 export async function fetchCountries(): Promise<CountryType[]> {
   try {

@@ -1,4 +1,4 @@
-import { VisitedCountryProps } from '../../utils/types';
+import { VisitedCountryProps } from '../../types/types';
 import styles from './VisitedCountries.module.css';
 
 export const VisitedCountry = ({

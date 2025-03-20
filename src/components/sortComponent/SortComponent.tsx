@@ -1,4 +1,4 @@
-import { SortProps } from '../../utils/types';
+import { SortProps } from '../../types/types';
 import styles from './SortComponent.module.css';
 
 export const SortComponent = ({

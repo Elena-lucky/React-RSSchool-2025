@@ -1,4 +1,4 @@
-import { FilterProps } from '../../utils/types';
+import { FilterProps } from '../../types/types';
 
 export const FilterComponent = ({
   selectedRegion,
@@ -8,6 +8,7 @@ export const FilterComponent = ({
     'All regions',
     'Africa',
     'Americas',
+    'Antarctic',
     'Asia',
     'Europe',
     'Oceania',

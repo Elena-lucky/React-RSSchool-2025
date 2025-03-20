@@ -1,4 +1,4 @@
-import { SearchProps } from '../../utils/types';
+import { SearchProps } from '../../types/types';
 
 export const SearchComponent = ({
   searchQuery,
