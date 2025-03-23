@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { CountryCardProps } from '../../types/types';
 import { VisitedCountry } from '../visitedCountries/VisitedCountries';
 import styles from './CountryCard.module.css';
 
-export const CountryCard = ({ country }: CountryCardProps) => {
+export const CountryCard = React.memo(({ country }: CountryCardProps) => {
   const [isVisited, setIsVisited] = useState<boolean>(false);
 
   useEffect(() => {
@@ -13,29 +13,32 @@ export const CountryCard = ({ country }: CountryCardProps) => {
     setIsVisited(!!visitedCountries[country.name.common]);
   }, [country.name.common]);
 
-  const handleToggleVisited = (isChecked: boolean) => {
-    const visitedCountries = JSON.parse(
-      localStorage.getItem('visitedCountries') || '{}'
-    );
+  const handleToggleVisited = useCallback(
+    (isChecked: boolean) => {
+      const visitedCountries = JSON.parse(
+        localStorage.getItem('visitedCountries') || '{}'
+      );
 
-    let updatedVisitedCountries;
-    if (isChecked) {
-      updatedVisitedCountries = {
-        ...visitedCountries,
-        [country.name.common]: true,
-      };
-    } else {
-      const { [country.name.common]: _, ...rest } = visitedCountries;
-      void _;
-      updatedVisitedCountries = rest;
-    }
+      let updatedVisitedCountries;
+      if (isChecked) {
+        updatedVisitedCountries = {
+          ...visitedCountries,
+          [country.name.common]: true,
+        };
+      } else {
+        const { [country.name.common]: _, ...rest } = visitedCountries;
+        void _;
+        updatedVisitedCountries = rest;
+      }
 
-    localStorage.setItem(
-      'visitedCountries',
-      JSON.stringify(updatedVisitedCountries)
-    );
-    setIsVisited(isChecked);
-  };
+      localStorage.setItem(
+        'visitedCountries',
+        JSON.stringify(updatedVisitedCountries)
+      );
+      setIsVisited(isChecked);
+    },
+    [country.name.common]
+  );
 
   return (
     <li className={styles.item}>
@@ -62,4 +65,6 @@ export const CountryCard = ({ country }: CountryCardProps) => {
       />
     </li>
   );
-};
+});
+
+CountryCard.displayName = 'CountryCard';

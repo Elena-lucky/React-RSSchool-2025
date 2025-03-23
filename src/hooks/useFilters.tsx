@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { CountryType } from '../types/types';
 
 export const useFilters = (countries: CountryType[]) => {
@@ -7,7 +7,7 @@ export const useFilters = (countries: CountryType[]) => {
   const [sortBy, setSortBy] = useState<'population' | 'name'>('population');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
-  const filteredCountries = () => {
+  const filteredCountries = useMemo(() => {
     return [...countries]
       .filter(
         (country) =>
@@ -25,7 +25,7 @@ export const useFilters = (countries: CountryType[]) => {
             ? a.name.common.localeCompare(b.name.common)
             : b.name.common.localeCompare(a.name.common)
       );
-  };
+  }, [countries, selectedRegion, searchQuery, sortBy, sortOrder]);
 
   const resetFilters = () => {
     setSelectedRegion('All regions');

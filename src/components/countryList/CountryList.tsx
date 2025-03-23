@@ -30,8 +30,6 @@ export const CountryList = () => {
     return <div>{error}</div>;
   }
 
-  const countriesToDisplay = filteredCountries();
-
   return (
     <div>
       <div className={styles.filters}>
@@ -55,11 +53,11 @@ export const CountryList = () => {
       </div>
       <div>
         <h1>List of Countries</h1>
-        {countriesToDisplay.length === 0 ? (
+        {filteredCountries.length === 0 ? (
           <p>No countries found</p>
         ) : (
           <ul className={styles.listCountry}>
-            {countriesToDisplay.map((country: CountryType, index: number) => (
+            {filteredCountries.map((country: CountryType, index: number) => (
               <CountryCard key={index} country={country} />
             ))}
           </ul>

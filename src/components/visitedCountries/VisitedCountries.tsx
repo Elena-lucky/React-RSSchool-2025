@@ -1,27 +1,28 @@
+import React from 'react';
 import { VisitedCountryProps } from '../../types/types';
 import styles from './VisitedCountries.module.css';
 
-export const VisitedCountry = ({
-  countryName,
-  onToggle,
-  isChecked,
-}: VisitedCountryProps) => {
-  const handleCheckboxChange = () => {
-    onToggle(!isChecked);
-  };
+export const VisitedCountry = React.memo(
+  ({ countryName, onToggle, isChecked }: VisitedCountryProps) => {
+    const handleCheckboxChange = () => {
+      onToggle(!isChecked);
+    };
 
-  return (
-    <div className={styles.checkboxWrapper}>
-      <input
-        type="checkbox"
-        id={`cbx-${countryName}`}
-        className={styles.inpCbx}
-        checked={isChecked}
-        onChange={handleCheckboxChange}
-      />
-      <label htmlFor={`cbx-${countryName}`} className={styles.cbx}>
-        <span>Visited</span>
-      </label>
-    </div>
-  );
-};
+    return (
+      <div className={styles.checkboxWrapper}>
+        <input
+          type="checkbox"
+          id={`cbx-${countryName}`}
+          className={styles.inpCbx}
+          checked={isChecked}
+          onChange={handleCheckboxChange}
+        />
+        <label htmlFor={`cbx-${countryName}`} className={styles.cbx}>
+          <span>Visited</span>
+        </label>
+      </div>
+    );
+  }
+);
+
+VisitedCountry.displayName = 'VisitedCountry';
