@@ -1,23 +1,25 @@
-export interface Person {
+export interface Character {
+  id: number;
   name: string;
-  birth_year: string;
+  status: string;
+  species: string;
   gender: string;
-  hair_color: string;
-  eye_color: string;
-  height: string;
-  mass: string;
-  skin_color: string;
-  homeworld: string;
+  type: string;
+  origin: string;
+  location: string;
+  image: string;
   url: string;
   created: string;
-  edited: string;
 }
 
 export interface ApiResponse {
-  results: Person[];
-  count: number;
-  next: string | null;
-  previous: string | null;
+  info: {
+    count: number;
+    pages: number;
+    next: string | null;
+    prev: string | null;
+  };
+  results: Character[];
 }
 
 export enum SearchParams {
@@ -31,11 +33,11 @@ export interface MainPageProps {
   currentPage: number;
   details: string | null;
   data: ApiResponse;
-  personDetails: Person | null;
+  personDetails: Character | null;
 }
 export interface ResultProps {
   searchQuery: string;
   currentPage: number;
   data: ApiResponse;
-  onPersonClick: (personId: string) => void;
+  onPersonClick: (personId: number) => void;
 }

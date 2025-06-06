@@ -59,8 +59,9 @@ button:disabled {
 
 [data-theme='light'] {
   color: #213547;
-  background-color: #f1f0f0;
-  background: url(/background-light.jpg) no-repeat;
+  background: linear-gradient(135deg, #f0faff, #e4f1fb, #d6e9f7);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   background-size: cover;
 }
 
@@ -84,8 +85,9 @@ button:disabled {
 
 [data-theme='dark'] {
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-  background: url(/background-dark.jpg) no-repeat;
+  background: linear-gradient(135deg, #0a0f2c, #1b1f5e, #3c4d99);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   background-size: cover;
 }
 

@@ -30,5 +30,5 @@
 }
 
 .container input:checked ~ svg {
-  fill: #ffeb49;
+  fill: rgb(236, 213, 37);
 }

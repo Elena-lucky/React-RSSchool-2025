@@ -5,10 +5,10 @@ import ErrorBoundary from '../components/error boundary/ErrorBoundary';
 import './global.css';
 
 export const metadata: Metadata = {
-  title: 'Star Wars API',
-  description: 'Star Wars API is a trainee project for React course',
+  title: 'Rick and Morty API',
+  description: 'Rick and Morty API is a trainee project for React course',
   icons: {
-    icon: '/favicon.svg',
+    icon: '/favicon.ico',
   },
 };
 

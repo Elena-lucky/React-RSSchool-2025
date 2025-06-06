@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useTransition } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Spinner from '../spinner/Spinner';
 import styles from './Search.module.css';
@@ -14,19 +14,18 @@ const Search = ({ searchQuery = '' }: SearchProps) => {
   const searchParams = useSearchParams();
   const inputRef = useRef<HTMLInputElement>(null);
   const [inputValue, setInputValue] = useState(searchQuery);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
   const handleSearch = () => {
     const trimmedQuery = inputValue.trim();
     if (trimmedQuery) {
-      setIsLoading(true);
-      setTimeout(() => {
-        const params = new URLSearchParams(searchParams.toString());
-        params.set('query', trimmedQuery);
-        params.set('page', '1');
+      const params = new URLSearchParams(searchParams.toString());
+      params.set('query', trimmedQuery);
+      params.set('page', '1');
+
+      startTransition(() => {
         router.push(`/?${params.toString()}`);
-        setIsLoading(false);
-      }, 7000);
+      });
     }
   };
 
@@ -57,14 +56,14 @@ const Search = ({ searchQuery = '' }: SearchProps) => {
       <button
         className={styles.searchButton}
         onClick={handleSearch}
-        disabled={!inputValue.trim() || isLoading}
+        disabled={!inputValue.trim() || isPending}
       >
-        {isLoading ? 'Searching...' : 'Search'}
+        {isPending ? 'Searching...' : 'Search'}
       </button>
       <button className={styles.resetButton} onClick={handleReset}>
         Reset
       </button>
-      {isLoading && <Spinner />}
+      {isPending && <Spinner />}
     </div>
   );
 };

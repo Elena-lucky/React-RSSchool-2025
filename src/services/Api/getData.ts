@@ -1,12 +1,12 @@
-import { ApiResponse, Person } from '../../utils/types';
+import { ApiResponse, Character } from '../../utils/types';
 
-export async function getPersons(
-  searchQuery: string,
+export async function getAllCharacters(
+  name: string,
   page: string
 ): Promise<ApiResponse> {
   try {
     const response = await fetch(
-      `https://swapi.dev/api/people/?search=${searchQuery}&page=${page}`
+      `https://rickandmortyapi.com/api/character/?name=${name}&page=${page}`
     );
 
     if (!response.ok) {
@@ -21,9 +21,11 @@ export async function getPersons(
   }
 }
 
-export async function getPersonById(details: string): Promise<Person> {
+export async function getCharacter(id: string): Promise<Character> {
   try {
-    const response = await fetch(`https://swapi.dev/api/people/${details}`);
+    const response = await fetch(
+      `https://rickandmortyapi.com/api/character/${id}`
+    );
 
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);

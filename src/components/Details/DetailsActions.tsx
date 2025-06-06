@@ -1,13 +1,13 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { Person } from '../../utils/types';
+import { Character } from '../../utils/types';
 import Details from './Details';
 import Spinner from '../spinner/Spinner';
 import styles from './Details.module.css';
 
 interface DetailsActionsProps {
-  person: Person;
+  person: Character;
   personId: string | null;
   onClose: () => void;
 }

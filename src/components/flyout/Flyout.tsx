@@ -5,13 +5,13 @@ import { useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearSelectedItems } from '../../store/selectedItemsSlice';
 import { RootState } from '../../store/store';
-import { Person } from '../../utils/types';
+import { Character } from '../../utils/types';
 import styles from './Flyout.module.css';
 
 const Flyout = () => {
   const dispatch = useDispatch();
   const selectedItems = useSelector(
-    (state: RootState) => state.selectedItems.selectedItems as Person[]
+    (state: RootState) => state.selectedItems.selectedItems as Character[]
   );
 
   const downloadLinkRef = useRef<HTMLAnchorElement | null>(null);
@@ -21,26 +21,26 @@ const Flyout = () => {
 
     const delimiter = ';';
     const headers = [
+      'Image',
       'Name',
-      'Birth Year',
+      'Status',
+      'Species',
+      'Type',
       'Gender',
-      'Height',
-      'Mass',
-      'Eye Color',
-      'Homeworld',
       'URL',
+      'Created',
     ];
 
     const csvRows = selectedItems.map((person) =>
       [
+        person.image,
         person.name,
-        person.birth_year,
+        person.status,
+        person.species,
+        person.type,
         person.gender,
-        person.height,
-        person.mass,
-        person.eye_color,
-        person.homeworld,
         person.url,
+        person.created,
       ]
         .map((value) => `"${value}"`)
         .join(delimiter)
@@ -69,7 +69,8 @@ const Flyout = () => {
         <div className={styles.ray}></div>
         <div className={styles.text}>
           {selectedItems.length}{' '}
-          {selectedItems.length === 1 ? 'person is' : 'persons are'} selected
+          {selectedItems.length === 1 ? 'character is' : 'characters are'}{' '}
+          selected
         </div>
         <div className={styles.buttons}>
           <button onClick={() => dispatch(clearSelectedItems())}>

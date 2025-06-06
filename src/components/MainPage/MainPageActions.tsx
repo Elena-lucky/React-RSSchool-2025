@@ -24,13 +24,14 @@ const MainPageActions = ({
   return (
     <div className={styles.container}>
       <p className={styles.greeting}>
-        Welcome to the Star Wars Universe Explorer! Dive into the galaxy far,
-        far away and uncover fascinating details about your favorite Star Wars
-        characters. Whether you are a Jedi, Sith, or just a curious traveler, my
-        app helps you connect with the iconic personalities of this legendary
-        saga. Simply type a name or last name into the search bar, and you will
-        discover key facts, hidden secrets, and more about the person you are
-        looking for.
+        Welcome to the Rick and Morty Universe Explorer! Step into a multiverse
+        of bizarre adventures and discover fascinating details about your
+        favorite Rick and Morty characters. Whether you are a mad scientist, a
+        curious Morty, or just a fan of interdimensional chaos, this app lets
+        you explore the unique personalities from the show. Simply type a name
+        into the search bar to uncover key facts. You can also mark your
+        favorite characters and download detailed information about them to keep
+        or share.
       </p>
       <div className={styles.usersInput}>
         <Search searchQuery={searchQuery} />
@@ -48,7 +49,7 @@ const MainPageActions = ({
                   const params = new URLSearchParams({
                     query: searchQuery,
                     page: currentPage.toString(),
-                    details: personId,
+                    details: personId.toString(),
                   });
                   router.push(`/?${params.toString()}`);
                 }}
@@ -76,14 +77,11 @@ const MainPageActions = ({
           </div>
         )}
       </div>
-      {data && data.count > 0 && (
-        <Pagination
-          currentPage={currentPage}
-          hasPrevious={!!data.previous}
-          hasNext={!!data.next}
-          searchQuery={searchQuery}
-        />
-      )}
+      <Pagination
+        currentPage={currentPage}
+        totalPages={data.info.pages}
+        searchQuery={searchQuery}
+      />
       <Flyout />
     </div>
   );

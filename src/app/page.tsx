@@ -1,15 +1,13 @@
 import { Suspense } from 'react';
 import MainPage from '../components/MainPage/MainPage';
 import Spinner from '../components/spinner/Spinner';
-import { getPersons, getPersonById } from '../services/Api/getData';
+import { getAllCharacters, getCharacter } from '../services/Api/getData';
 
 interface PageProps {
   searchParams?: Record<string, string | string[] | undefined>;
 }
 
-export default async function Home({
-  searchParams,
-}: PageProps): Promise<JSX.Element> {
+export default async function Home({ searchParams }: PageProps) {
   const searchQuery =
     typeof searchParams?.query === 'string' ? searchParams.query : '';
   const currentPage =
@@ -19,8 +17,8 @@ export default async function Home({
   const details =
     typeof searchParams?.details === 'string' ? searchParams.details : null;
 
-  const data = await getPersons(searchQuery, currentPage.toString());
-  const personDetails = details ? await getPersonById(details) : null;
+  const data = await getAllCharacters(searchQuery, currentPage.toString());
+  const personDetails = details ? await getCharacter(details) : null;
 
   return (
     <Suspense
