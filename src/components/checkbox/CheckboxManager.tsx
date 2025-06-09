@@ -4,10 +4,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toggleItem } from '../../store/selectedItemsSlice';
 import { RootState } from '../../store/store';
 import Checkbox from '../../components/checkbox/Checkbox';
-import { Person } from '../../utils/types';
+import { Character } from '../../utils/types';
 
 interface ResultClientProps {
-  person: Person;
+  person: Character;
 }
 
 const CheckboxManager = ({ person }: ResultClientProps) => {

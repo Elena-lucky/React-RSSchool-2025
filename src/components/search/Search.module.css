@@ -1,4 +1,23 @@
+.searchField {
+  display: flex;
+  @media screen and (max-width: 470px) {
+    flex-direction: column;
+    gap: 5px;
+  }
+}
+
+.searchInput {
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
 .searchButton,
 .resetButton {
   margin: 0 2rem;
+  @media screen and (max-width: 585px) {
+    margin: 0 5px;
+  }
+  @media screen and (max-width: 470px) {
+    padding: 5px;
+  }
 }

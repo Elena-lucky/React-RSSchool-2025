@@ -1,5 +1,6 @@
 'use client';
 
+import clsx from 'clsx';
 import { Suspense } from 'react';
 import Spinner from '../spinner/Spinner';
 import Search from '../../components/search/Search';
@@ -38,7 +39,11 @@ const MainPageActions = ({
         <ThemeManager />
       </div>
       <div className={`${styles.content}`}>
-        <div className={styles.leftSection}>
+        <div
+          className={clsx(styles.leftSection, {
+            [styles.leftSectionHidden]: details,
+          })}
+        >
           {data && data.results.length > 0 ? (
             <Suspense fallback={<Spinner />}>
               <Result
@@ -60,7 +65,11 @@ const MainPageActions = ({
           )}
         </div>
         {details && (
-          <div className={styles.rightSection}>
+          <div
+            className={clsx(styles.rightSection, {
+              [styles.rightSectionFull]: details,
+            })}
+          >
             <Suspense fallback={<Spinner />}>
               <DetailsActions
                 person={personDetails}

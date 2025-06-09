@@ -11,6 +11,11 @@
     opacity 0.5s ease,
     transform 0.5s ease;
   transform: translateY(100%);
+  @media screen and (max-width: 1000px) {
+    width: 250px;
+    height: 160px;
+    bottom: 170px;
+  }
 }
 
 .dot {
@@ -82,10 +87,14 @@
 
 .card .text {
   font-weight: bolder;
-  font-size: 2.1rem;
+  font-size: 2rem;
   background: linear-gradient(45deg, #000000 4%, #fff, #000);
   background-clip: text;
   color: transparent;
+  @media screen and (max-width: 1000px) {
+    font-size: 1rem;
+    color: white;
+  }
 }
 
 .buttons {
@@ -99,6 +108,11 @@
   width: 100px;
   height: 43px;
   font-size: 0.8rem;
+  @media screen and (max-width: 1000px) {
+    width: 90px;
+    height: 30px;
+    padding: 5px;
+  }
 }
 
 .line {

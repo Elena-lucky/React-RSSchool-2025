@@ -5,7 +5,7 @@ import type {
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { Action, PayloadAction } from '@reduxjs/toolkit/react';
 import { HYDRATE } from 'next-redux-wrapper';
-import { ApiResponse, Person, SearchParams } from '../../utils/types';
+import { ApiResponse, Character, SearchParams } from '../../utils/types';
 import type { RootState } from '../../store/store';
 
 function isHydrateAction(action: Action): action is PayloadAction<RootState> {
@@ -18,19 +18,19 @@ export interface PersonsQueryParams {
 }
 
 export const apiSlice = createApi({
-  baseQuery: fetchBaseQuery({ baseUrl: 'https://swapi.dev/api' }),
+  baseQuery: fetchBaseQuery({ baseUrl: 'https://rickandmortyapi.com/api' }),
   endpoints: (builder) => ({
-    getPerson: builder.query<ApiResponse, PersonsQueryParams>({
+    getAllCharacters: builder.query<ApiResponse, PersonsQueryParams>({
       query: ({ query = '', page = 1 }: PersonsQueryParams) => {
         const searchParams = new URLSearchParams({
           [SearchParams.page]: page.toString(),
           [SearchParams.name]: query,
         });
-        return `people/?${searchParams.toString()}`;
+        return `character/?${searchParams.toString()}`;
       },
     }),
-    getPersonById: builder.query<Person, string>({
-      query: (id) => `/people/${id}`,
+    getCharacter: builder.query<Character, string>({
+      query: (id) => `/character/${id}`,
     }),
   }),
   extractRehydrationInfo(
@@ -46,9 +46,9 @@ export const apiSlice = createApi({
 });
 
 export const {
-  useGetPersonQuery,
-  useGetPersonByIdQuery,
+  useGetAllCharactersQuery,
+  useGetCharacterQuery,
   util: { getRunningQueriesThunk },
 } = apiSlice;
 
-export const { getPerson, getPersonById } = apiSlice.endpoints;
+export const { getAllCharacters, getCharacter } = apiSlice.endpoints;

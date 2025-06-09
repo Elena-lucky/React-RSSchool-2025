@@ -44,8 +44,9 @@ const Search = ({ searchQuery = '' }: SearchProps) => {
   };
 
   return (
-    <div data-testid="search-component">
+    <div className={styles.searchField} data-testid="search-component">
       <input
+        className={styles.searchInput}
         ref={inputRef}
         type="text"
         value={inputValue}

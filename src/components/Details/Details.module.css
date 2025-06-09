@@ -1,6 +1,7 @@
 .results {
   flex: 1;
-  margin-top: 25px;
+  margin-top: 15px;
+  position: relative;
 }
 
 .resultItem {
@@ -30,6 +31,9 @@
 
 .resultItem ul {
   text-align: left;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
 }
 
 .itemDetails {
@@ -39,9 +43,10 @@
 
 .closeButton {
   position: absolute;
-  top: 200px;
-  right: 30px;
+  top: 10px;
+  right: 10px;
   background: transparent;
   border: black 1px solid;
   font-size: 1rem;
+  z-index: 10;
 }

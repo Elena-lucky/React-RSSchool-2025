@@ -23,12 +23,14 @@ interface ThemeProviderProps {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider = ({ children }: ThemeProviderProps) => {
-  const [theme, setTheme] = useState<Theme>(() => {
-    if (typeof window !== 'undefined') {
-      return (localStorage.getItem('theme') as Theme) || 'dark';
-    }
-    return 'dark';
-  });
+  const [theme, setTheme] = useState<Theme>('dark');
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    const savedTheme = (localStorage.getItem('theme') as Theme) || 'dark';
+    setTheme(savedTheme);
+    setMounted(true);
+  }, []);
 
   const toggleTheme = useCallback(() => {
     setTheme((prevTheme) => {
@@ -41,6 +43,8 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
+
+  if (!mounted) return null;
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>

@@ -6,11 +6,18 @@
 .usersInput {
   display: flex;
   justify-content: center;
+  @media screen and (max-width: 470px) {
+    justify-content: space-between;
+    align-items: start;
+  }
 }
 
 .content {
   display: flex;
   gap: 20px;
+  @media screen and (max-width: 570px) {
+    gap: 5px;
+  }
 }
 
 .leftSection {
@@ -21,9 +28,22 @@
 
 .rightSection {
   flex: 1;
-  border-left: 2px solid #ccc;
   padding-left: 20px;
   transition: width 0.3s ease;
+  @media screen and (max-width: 720px) {
+    width: 220px;
+  }
+}
+
+@media screen and (max-width: 520px) {
+  .leftSectionHidden {
+    display: none;
+  }
+
+  .rightSectionFull {
+    width: 100%;
+    padding-left: 0;
+  }
 }
 
 .noResults {

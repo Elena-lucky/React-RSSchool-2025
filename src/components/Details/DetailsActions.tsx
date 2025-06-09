@@ -31,12 +31,10 @@ const DetailsActions = ({ person, personId, onClose }: DetailsActionsProps) => {
   }, [onClose]);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
+    if (person) {
       setIsLoading(false);
-    }, 3000);
-
-    return () => clearTimeout(timer);
-  }, []);
+    }
+  }, [person]);
 
   if (!personId) return null;
 

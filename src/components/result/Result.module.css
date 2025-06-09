@@ -63,7 +63,7 @@
   margin: 0;
   font-size: 1rem;
   font-weight: bold;
-  white-space: nowrap;
+  white-space: wrap;
   @media screen and (max-width: 600px) {
     font-size: 0.7rem;
   }
