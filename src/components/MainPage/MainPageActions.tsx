@@ -44,7 +44,7 @@ const MainPageActions = ({
             [styles.leftSectionHidden]: details,
           })}
         >
-          {data && data.results.length > 0 ? (
+          {data && data.results && data.results.length > 0 ? (
             <Suspense fallback={<Spinner />}>
               <Result
                 searchQuery={searchQuery}
@@ -61,7 +61,7 @@ const MainPageActions = ({
               />
             </Suspense>
           ) : (
-            <p>No results found</p>
+            <p className={styles.noResults}>No results found</p>
           )}
         </div>
         {details && (
@@ -86,11 +86,13 @@ const MainPageActions = ({
           </div>
         )}
       </div>
-      <Pagination
-        currentPage={currentPage}
-        totalPages={data.info.pages}
-        searchQuery={searchQuery}
-      />
+      {data && data.info && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={data.info.pages}
+          searchQuery={searchQuery}
+        />
+      )}
       <Flyout />
     </div>
   );

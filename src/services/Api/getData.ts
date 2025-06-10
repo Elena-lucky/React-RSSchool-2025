@@ -3,11 +3,15 @@ import { ApiResponse, Character } from '../../utils/types';
 export async function getAllCharacters(
   name: string,
   page: string
-): Promise<ApiResponse> {
+): Promise<ApiResponse | null> {
   try {
     const response = await fetch(
       `https://rickandmortyapi.com/api/character/?name=${name}&page=${page}`
     );
+
+    if (response.status === 404) {
+      return null;
+    }
 
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);

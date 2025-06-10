@@ -1,6 +1,9 @@
 .greeting {
   font-size: 1rem;
   font-weight: bold;
+  @media screen and (max-width: 570px) {
+    font-size: 0.7rem;
+  }
 }
 
 .usersInput {
@@ -47,6 +50,7 @@
 }
 
 .noResults {
+  margin-top: 20vh;
   text-align: center;
   font-size: 1.5rem;
 }
