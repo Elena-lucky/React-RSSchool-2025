@@ -4,10 +4,11 @@ import Spinner from '../components/spinner/Spinner';
 import { getAllCharacters, getCharacter } from '../services/Api/getData';
 
 interface PageProps {
-  searchParams?: Record<string, string | string[] | undefined>;
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
 }
 
-export default async function Home({ searchParams }: PageProps) {
+export default async function Home(props: PageProps) {
+  const searchParams = await props.searchParams;
   const searchQuery =
     typeof searchParams?.query === 'string' ? searchParams.query : '';
   const currentPage =
