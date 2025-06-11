@@ -17,37 +17,38 @@ const mockStore = configureStore({
 
 describe('Result Component', () => {
   const mockData: ApiResponse = {
-    count: 2,
-    next: 'https://swapi.dev/api/people/?page=2',
-    previous: null,
+    info: {
+      count: 2,
+      pages: 1,
+      next: null,
+      prev: null,
+    },
     results: [
       {
-        name: 'Luke Skywalker',
-        birth_year: '19BBY',
-        gender: 'male',
-        hair_color: 'blond',
-        eye_color: 'blue',
-        height: '172',
-        mass: '77',
-        skin_color: 'fair',
-        homeworld: 'Tatooine',
-        url: 'http://example.com/people/1/',
-        created: '2014-12-09T13:50:51.644000Z',
-        edited: '2014-12-20T21:17:56.891000Z',
+        id: 1,
+        name: 'Rick Sanchez',
+        status: 'Alive',
+        species: 'Human',
+        type: '',
+        gender: 'Male',
+        origin: 'Earth (C-137)',
+        location: 'Citadel of Ricks',
+        image: 'https://rickandmortyapi.com/api/character/avatar/1.jpeg',
+        url: 'https://rickandmortyapi.com/api/character/1',
+        created: '2017-11-04T18:48:46.250Z',
       },
       {
-        name: 'Leia Organa',
-        birth_year: '19BBY',
-        gender: 'female',
-        hair_color: 'blond',
-        eye_color: 'brown',
-        height: '150',
-        mass: '49',
-        skin_color: 'fair',
-        homeworld: 'Alderaan',
-        url: 'http://swapi.dev/api/people/5/',
-        created: '2014-12-09T13:50:51.644000Z',
-        edited: '2014-12-20T21:17:56.891000Z',
+        id: 2,
+        name: 'Morty Smith',
+        status: 'Alive',
+        species: 'Human',
+        type: '',
+        gender: 'Male',
+        origin: 'Earth (C-137)',
+        location: 'Citadel of Ricks',
+        image: 'https://rickandmortyapi.com/api/character/avatar/2.jpeg',
+        url: 'https://rickandmortyapi.com/api/character/2',
+        created: '2017-11-04T18:50:21.651Z',
       },
     ],
   };
@@ -58,61 +59,49 @@ describe('Result Component', () => {
     vi.clearAllMocks();
   });
 
-  it('renders the list of persons correctly', () => {
+  it('renders the list of characters correctly', () => {
     render(
       <Provider store={mockStore}>
         <Result
           data={mockData}
           onPersonClick={onPersonClickMock}
-          searchQuery="Luke"
+          searchQuery="Rick"
           currentPage={1}
         />
       </Provider>
     );
 
-    expect(screen.getByText('Luke Skywalker')).toBeInTheDocument();
-    expect(screen.getByText('Leia Organa')).toBeInTheDocument();
-
-    const birthYearElements = screen.getAllByText(/The birth year:/i);
-    expect(birthYearElements.length).toBe(2);
-
-    const genderElements = screen.getAllByText(/The gender:/i);
-    expect(genderElements.length).toBe(2);
-
-    const hairColorElements = screen.getAllByText(/The hair color:/i);
-    expect(hairColorElements.length).toBe(2);
-
-    const eyeColorElements = screen.getAllByText(/The eye color:/i);
-    expect(eyeColorElements.length).toBe(2);
+    expect(screen.getByText('Rick Sanchez')).toBeInTheDocument();
+    expect(screen.getByText('Morty Smith')).toBeInTheDocument();
   });
 
-  it('calls onPersonClick when a person item is clicked', () => {
+  it('calls onPersonClick when a character item is clicked', () => {
     render(
       <Provider store={mockStore}>
         <Result
           data={mockData}
           onPersonClick={onPersonClickMock}
-          searchQuery="Luke"
+          searchQuery="Rick"
           currentPage={1}
         />
       </Provider>
     );
 
-    const personItem = screen.getByText('Luke Skywalker').closest('div');
-    if (personItem) {
-      fireEvent.click(personItem);
+    const characterItem = screen.getByText('Rick Sanchez').closest('div');
+    if (characterItem) {
+      fireEvent.click(characterItem);
     }
 
-    expect(onPersonClickMock).toHaveBeenCalledWith('1');
+    expect(onPersonClickMock).toHaveBeenCalledWith(1);
   });
 
-  it('renders the CheckboxManager component for each person', () => {
+  it('renders the CheckboxManager component for each character', () => {
     render(
       <Provider store={mockStore}>
         <Result
           data={mockData}
           onPersonClick={onPersonClickMock}
-          searchQuery="Luke"
+          searchQuery="Rick"
           currentPage={1}
         />
       </Provider>

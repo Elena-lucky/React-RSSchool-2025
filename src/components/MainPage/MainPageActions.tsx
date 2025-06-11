@@ -91,6 +91,7 @@ const MainPageActions = ({
           currentPage={currentPage}
           totalPages={data.info.pages}
           searchQuery={searchQuery}
+          data-testid="pagination"
         />
       )}
       <Flyout />

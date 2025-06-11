@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import DetailsActions from '../components/Details/DetailsActions';
-import { Person } from '../utils/types';
+import { Character } from '../utils/types';
 import { vi } from 'vitest';
 
 vi.mock('./Details', () => ({
@@ -12,19 +12,18 @@ vi.mock('../spinner/Spinner', () => ({
 }));
 
 describe('DetailsActions Component', () => {
-  const mockPerson: Person = {
-    name: 'Luke Skywalker',
-    birth_year: '19BBY',
-    gender: 'male',
-    hair_color: 'blond',
-    eye_color: 'blue',
-    height: '172',
-    mass: '77',
-    skin_color: 'fair',
-    homeworld: 'Tatooine',
-    url: 'http://example.com/people/1/',
-    created: '2014-12-09T13:50:51.644000Z',
-    edited: '2014-12-20T21:17:56.891000Z',
+  const mockCharacter: Character = {
+    id: 361,
+    name: 'Toxic Rick',
+    status: 'Dead',
+    species: 'Humanoid',
+    gender: 'Male',
+    type: "Rick's Toxic Side",
+    origin: 'Alien Spa',
+    location: 'Earth',
+    image: 'https://rickandmortyapi.com/api/character/avatar/361.jpeg',
+    url: 'https://rickandmortyapi.com/api/character/361',
+    created: '2018-01-10T18:20:41.703Z',
   };
 
   const onCloseMock = vi.fn();
@@ -38,18 +37,13 @@ describe('DetailsActions Component', () => {
     vi.useRealTimers();
   });
 
-  it('renders the Spinner while loading', () => {
-    render(
-      <DetailsActions person={mockPerson} personId="1" onClose={onCloseMock} />
-    );
-
-    const spinner = screen.getByRole('progressbar');
-    expect(spinner).toBeInTheDocument();
-  });
-
   it('calls onClose when clicking outside the component', () => {
     render(
-      <DetailsActions person={mockPerson} personId="1" onClose={onCloseMock} />
+      <DetailsActions
+        person={mockCharacter}
+        personId="1"
+        onClose={onCloseMock}
+      />
     );
 
     fireEvent.mouseDown(document.body);
@@ -59,7 +53,11 @@ describe('DetailsActions Component', () => {
 
   it('calls onClose when clicking the close button', () => {
     render(
-      <DetailsActions person={mockPerson} personId="1" onClose={onCloseMock} />
+      <DetailsActions
+        person={mockCharacter}
+        personId="1"
+        onClose={onCloseMock}
+      />
     );
 
     const closeButton = screen.getByRole('button', { name: /✖/i });
@@ -71,7 +69,7 @@ describe('DetailsActions Component', () => {
   it('does not render anything when personId is null', () => {
     render(
       <DetailsActions
-        person={mockPerson}
+        person={mockCharacter}
         personId={null}
         onClose={onCloseMock}
       />

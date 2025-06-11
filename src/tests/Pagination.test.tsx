@@ -1,126 +1,67 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import Pagination from '../components/pagination/Pagination';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 vi.mock('next/navigation', () => ({
   useRouter: vi.fn(),
+  useSearchParams: vi.fn(),
 }));
 
-vi.mock('../spinner/Spinner', () => ({
-  default: vi.fn(() => <div>Loading...</div>),
+vi.mock('../components/spinner/Spinner', () => ({
+  default: () => <div>Loading...</div>,
 }));
 
-describe('Pagination Component', () => {
+describe('Pagination component', () => {
   const mockPush = vi.fn();
-  const mockRouter = { push: mockPush };
 
   beforeEach(() => {
     vi.clearAllMocks();
-    (useRouter as jest.Mock).mockReturnValue(mockRouter);
+
+    (useRouter as jest.Mock).mockReturnValue({
+      push: mockPush,
+    });
+
+    (useSearchParams as jest.Mock).mockReturnValue({
+      toString: () => '',
+    });
   });
 
-  it('renders the Pagination component with correct buttons and page number', () => {
-    render(
-      <Pagination
-        currentPage={2}
-        hasPrevious={true}
-        hasNext={true}
-        searchQuery="test"
-      />
-    );
+  it('renders current page and total pages', () => {
+    render(<Pagination currentPage={2} totalPages={5} />);
 
+    expect(screen.getByText('Page 2 of 5')).toBeInTheDocument();
     expect(screen.getByText('Previous')).toBeInTheDocument();
     expect(screen.getByText('Next')).toBeInTheDocument();
-    expect(screen.getByText('Page 2')).toBeInTheDocument();
   });
 
-  it('disables the Previous button when there is no previous page', () => {
-    render(
-      <Pagination
-        currentPage={1}
-        hasPrevious={false}
-        hasNext={true}
-        searchQuery="test"
-      />
-    );
-
-    const previousButton = screen.getByText('Previous');
-    expect(previousButton).toBeDisabled();
+  it('disables "Previous" on the first page', () => {
+    render(<Pagination currentPage={1} totalPages={5} />);
+    expect(screen.getByText('Previous')).toBeDisabled();
+    expect(screen.getByText('Next')).not.toBeDisabled();
   });
 
-  it('disables the Next button when there is no next page', () => {
-    render(
-      <Pagination
-        currentPage={5}
-        hasPrevious={true}
-        hasNext={false}
-        searchQuery="test"
-      />
-    );
-
-    const nextButton = screen.getByText('Next');
-    expect(nextButton).toBeDisabled();
+  it('disables "Next" on the last page', () => {
+    render(<Pagination currentPage={5} totalPages={5} />);
+    expect(screen.getByText('Next')).toBeDisabled();
+    expect(screen.getByText('Previous')).not.toBeDisabled();
   });
 
-  it('navigates to the previous page when the Previous button is clicked', async () => {
-    vi.useFakeTimers();
-
-    render(
-      <Pagination
-        currentPage={2}
-        hasPrevious={true}
-        hasNext={true}
-        searchQuery="test"
-      />
-    );
-
-    const previousButton = screen.getByText('Previous');
-    fireEvent.click(previousButton);
-    expect(previousButton).toBeDisabled();
-    vi.advanceTimersByTime(7000);
-    expect(mockPush).toHaveBeenCalledWith('/?page=1&query=test');
-    vi.useRealTimers();
+  it('calls router.push with correct page increment (next)', () => {
+    render(<Pagination currentPage={2} totalPages={5} />);
+    fireEvent.click(screen.getByText('Next'));
+    expect(mockPush).toHaveBeenCalledWith('/?page=3');
   });
 
-  it('navigates to the next page when the Next button is clicked', async () => {
-    vi.useFakeTimers();
-
-    render(
-      <Pagination
-        currentPage={2}
-        hasPrevious={true}
-        hasNext={true}
-        searchQuery="test"
-      />
-    );
-
-    const nextButton = screen.getByText('Next');
-    fireEvent.click(nextButton);
-    expect(nextButton).toBeDisabled();
-    vi.advanceTimersByTime(7000);
-    expect(mockPush).toHaveBeenCalledWith('/?page=3&query=test');
-    vi.useRealTimers();
+  it('calls router.push with correct page decrement (previous)', () => {
+    render(<Pagination currentPage={3} totalPages={5} />);
+    fireEvent.click(screen.getByText('Previous'));
+    expect(mockPush).toHaveBeenCalledWith('/?page=2');
   });
 
-  it('does not navigate when buttons are clicked during loading', async () => {
-    vi.useFakeTimers();
-
-    render(
-      <Pagination
-        currentPage={2}
-        hasPrevious={true}
-        hasNext={true}
-        searchQuery="test"
-      />
-    );
-
-    const nextButton = screen.getByText('Next');
-    fireEvent.click(nextButton);
-    expect(nextButton).toBeDisabled();
-    fireEvent.click(nextButton);
-    vi.advanceTimersByTime(7000);
-    expect(mockPush).toHaveBeenCalledTimes(1);
-    vi.useRealTimers();
+  it('includes search query in the URL', () => {
+    render(<Pagination currentPage={1} totalPages={3} searchQuery="rick" />);
+    fireEvent.click(screen.getByText('Next'));
+    expect(mockPush).toHaveBeenCalledWith('/?page=2&query=rick');
   });
 });

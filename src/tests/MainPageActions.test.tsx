@@ -74,43 +74,44 @@ const mockStore = configureStore({
 
 describe('MainPageActions Component', () => {
   const mockProps: MainPageProps = {
-    searchQuery: 'Luke',
+    searchQuery: 'Rick',
     currentPage: 1,
     details: '1',
     data: {
-      count: 1,
-      next: 'https://swapi.dev/api/people/?page=2',
-      previous: null,
+      info: {
+        count: 1,
+        pages: 1,
+        next: null,
+        prev: null,
+      },
       results: [
         {
-          name: 'Luke Skywalker',
-          birth_year: '19BBY',
-          gender: 'male',
-          hair_color: 'blond',
-          eye_color: 'blue',
-          height: '172',
-          mass: '77',
-          skin_color: 'fair',
-          homeworld: 'Tatooine',
-          url: 'http://example.com/people/1/',
-          created: '2014-12-09T13:50:51.644000Z',
-          edited: '2014-12-20T21:17:56.891000Z',
+          id: 1,
+          name: 'Rick Sanchez',
+          status: 'Alive',
+          species: 'Human',
+          type: '',
+          gender: 'Male',
+          origin: 'Earth (C-137)',
+          location: 'Citadel of Ricks',
+          image: 'https://rickandmortyapi.com/api/character/avatar/1.jpeg',
+          url: 'https://rickandmortyapi.com/api/character/1',
+          created: '2017-11-04T18:48:46.250Z',
         },
       ],
     },
     personDetails: {
-      name: 'Luke Skywalker',
-      birth_year: '19BBY',
-      gender: 'male',
-      hair_color: 'blond',
-      eye_color: 'blue',
-      height: '172',
-      mass: '77',
-      skin_color: 'fair',
-      homeworld: 'Tatooine',
-      url: 'https://swapi.dev/api/people/1/',
-      created: '2014-12-09T13:50:51.644000Z',
-      edited: '2014-12-20T21:17:56.891000Z',
+      id: 1,
+      name: 'Rick Sanchez',
+      status: 'Alive',
+      species: 'Human',
+      type: '',
+      gender: 'Male',
+      origin: 'Earth (C-137)',
+      location: 'Citadel of Ricks',
+      image: 'https://rickandmortyapi.com/api/character/avatar/1.jpeg',
+      url: 'https://rickandmortyapi.com/api/character/1',
+      created: '2017-11-04T18:48:46.250Z',
     },
   };
 
@@ -128,7 +129,7 @@ describe('MainPageActions Component', () => {
     );
 
     const greeting = screen.getByText(
-      /Welcome to the Star Wars Universe Explorer!/i
+      /Welcome to the Rick and Morty Universe Explorer!/i
     );
     expect(greeting).toBeInTheDocument();
   });
@@ -173,9 +174,12 @@ describe('MainPageActions Component', () => {
     const noDataProps: MainPageProps = {
       ...mockProps,
       data: {
-        count: 0,
-        next: null,
-        previous: null,
+        info: {
+          count: 1,
+          pages: 1,
+          next: null,
+          prev: null,
+        },
         results: [],
       },
     };

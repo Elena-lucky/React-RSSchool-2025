@@ -4,45 +4,43 @@ import { configureStore } from '@reduxjs/toolkit';
 import Flyout from '../components/flyout/Flyout';
 import selectedItemsReducer from '../store/selectedItemsSlice';
 import { vi } from 'vitest';
-import { Person } from '../utils/types';
+import { Character } from '../utils/types';
 
 global.URL.createObjectURL = vi.fn();
 global.URL.revokeObjectURL = vi.fn();
 
 describe('Flyout Component', () => {
-  const mockSelectedItems: Person[] = [
+  const mockSelectedItems: Character[] = [
     {
-      name: 'Luke Skywalker',
-      birth_year: '19BBY',
-      gender: 'male',
-      hair_color: 'blond',
-      eye_color: 'blue',
-      height: '172',
-      mass: '77',
-      skin_color: 'fair',
-      homeworld: 'Tatooine',
-      url: 'http://swapi.dev/api/people/1/',
-      created: '2014-12-09T13:50:51.644000Z',
-      edited: '2014-12-20T21:17:56.891000Z',
+      id: 1,
+      name: 'Rick Sanchez',
+      status: 'Alive',
+      species: 'Human',
+      type: '',
+      gender: 'Male',
+      origin: 'Earth (C-137)',
+      location: 'Citadel of Ricks',
+      image: 'https://rickandmortyapi.com/api/character/avatar/1.jpeg',
+      url: 'https://rickandmortyapi.com/api/character/1',
+      created: '2017-11-04T18:48:46.250Z',
     },
     {
-      name: 'Leia Organa',
-      birth_year: '19BBY',
-      gender: 'female',
-      hair_color: 'blond',
-      eye_color: 'brown',
-      height: '150',
-      mass: '49',
-      skin_color: 'fair',
-      homeworld: 'Alderaan',
-      url: 'http://swapi.dev/api/people/5/',
-      created: '2014-12-09T13:50:51.644000Z',
-      edited: '2014-12-20T21:17:56.891000Z',
+      id: 2,
+      name: 'Morty Smith',
+      status: 'Alive',
+      species: 'Human',
+      type: '',
+      gender: 'Male',
+      origin: 'Earth (C-137)',
+      location: 'Citadel of Ricks',
+      image: 'https://rickandmortyapi.com/api/character/avatar/2.jpeg',
+      url: 'https://rickandmortyapi.com/api/character/2',
+      created: '2017-11-04T18:50:21.651Z',
     },
   ];
 
   const setup = (
-    initialState: { selectedItems: Person[] } = { selectedItems: [] }
+    initialState: { selectedItems: Character[] } = { selectedItems: [] }
   ) => {
     const store = configureStore({
       reducer: {
@@ -62,17 +60,19 @@ describe('Flyout Component', () => {
 
   it('does not render when selectedItems is empty', () => {
     setup();
-    expect(screen.queryByText(/person is selected/i)).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/character is selected/i)
+    ).not.toBeInTheDocument();
   });
 
   it('renders when selectedItems is not empty', () => {
     setup({ selectedItems: mockSelectedItems });
-    expect(screen.getByText(/2 persons are selected/i)).toBeInTheDocument();
+    expect(screen.getByText(/2 characters are selected/i)).toBeInTheDocument();
   });
 
   it('displays correct text for single selected item', () => {
     setup({ selectedItems: [mockSelectedItems[0]] });
-    expect(screen.getByText(/1 person is selected/i)).toBeInTheDocument();
+    expect(screen.getByText(/1 character is selected/i)).toBeInTheDocument();
   });
 
   it('calls clearSelectedItems when "Unselect all" button is clicked', () => {
